@@ -1,18 +1,19 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100..900;1,100..900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Open+Sans:wght@300;400;500;600;700&display=swap');
+
 h1, h2, h3, h4, h5, h6 {
-    font-family: 'Poppins', sans-serif; /* Aplica la fuente Poppins */
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
 }
 
 .section-title {
-    font-family: 'Raleway', sans-serif; /* Aplica la fuente Raleway */
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    color: #100418;
+    margin-bottom: 20px;
 }
 
 body {
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f4;
-    color: #333;
+    font-family: 'Open Sans', sans-serif;
 }
 
 .container {
@@ -33,8 +34,8 @@ a:hover {
 
 /* Header */
 .header {
-    background-color: #100418;
-    color: white;
+    background-color: #13021b;
+    color: rgb(0, 0, 0);
     padding: 1px 0;
 }
 
@@ -48,20 +49,21 @@ a:hover {
 .logo-container {
     display: flex;
     align-items: center;
-    gap: 10px; 
+    gap: 10px;
+    margin-left: 0; /* Elimina cualquier margen adicional */
+    padding-left: 0; /* Asegúrate de que no haya padding */
 }
 
 .logo {
-    width: 70px;
-    height: 70px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-right: 15px;
+    width: 50px;
+    height: auto;
+    object-fit: contain;
+    border-radius: 50%; /* Hace que la imagen sea circular */
 }
 
 .site-title {
+    color: white;
     font-size: 1.4em;
-    font-weight: bold;
 }
 
 /* Botón de menú hamburguesa */
@@ -95,13 +97,12 @@ a:hover {
 }
 
 .nav-link {
-    color: white;
-    font-weight: bold;
+    color: #afa8a8;
     transition: color 0.3s ease;
 }
 
 .nav-link:hover {
-    color: #ddd;
+    color: #afa55f;
 }
 
 /* Search */
@@ -300,7 +301,7 @@ search-container {
 }
 
 .producto-button {
-    font-family: 'Poppins', sans-serif; /* Aplica la fuente Poppins */
+    font-family: 'Open Sans', sans-serif; /* Aplica la fuente Poppins */
     font-weight: 500; /* Peso de la fuente */
     font-size: 1em; /* Tamaño del texto */
     background-color: #100418;
