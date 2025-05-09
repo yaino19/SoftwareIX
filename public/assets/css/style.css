@@ -34,7 +34,7 @@ a:hover {
 
 /* Header */
 .header {
-    background-color: #13021b;
+    background-color: #ffffff;
     color: rgb(0, 0, 0);
     padding: 1px 0;
 }
@@ -62,8 +62,8 @@ a:hover {
 }
 
 .site-title {
-    color: white;
-    font-size: 1.4em;
+    color: rgb(27, 8, 29);
+    font-size: 1.2em;
 }
 
 /* Botón de menú hamburguesa */
@@ -72,7 +72,7 @@ a:hover {
     font-size: 1.5em;
     background: none;
     border: none;
-    color: white;
+    color: rgb(117, 111, 111);
     cursor: pointer;
     z-index: 1100;
 }
@@ -97,7 +97,7 @@ a:hover {
 }
 
 .nav-link {
-    color: #afa8a8;
+    color: #797373;
     transition: color 0.3s ease;
 }
 
@@ -128,7 +128,7 @@ search-container {
 }
 
 .search-button {
-    background-color: #837c5d;
+    background-color: #ae66b4;
     border: none;
     color: black;
     font-size: 1em;
@@ -153,7 +153,7 @@ search-container {
 
 #user-icon {
     font-size: 1.5em;
-    color: white;
+    color: rgb(147, 138, 138);
     transition: transform 0.3s ease;
 }
 
@@ -166,7 +166,7 @@ search-container {
     position: absolute;
     top: 120%;
     right: 0;
-    background-color: #100418;
+    background-color: #ffffff;
     border: 1px solid #ccc;
     border-radius: 10px;
     padding: 15px;
@@ -182,7 +182,7 @@ search-container {
 
 .user-options a {
     display: block;
-    color: white;
+    color: rgb(105, 100, 100);
     text-decoration: none;
     padding: 10px 15px;
     margin: 5px 0;
@@ -191,7 +191,8 @@ search-container {
 }
 
 .user-options a:hover {
-    background-color: #4B0082;
+    background-color: #6a3977;
+    color: rgb(255, 255, 255);
     border-radius: 20px;
 }
 
@@ -219,14 +220,31 @@ search-container {
     color: rgb(0, 0, 0);
 }
 
+
 .banner-title {
-    font-size: 2em;
-    margin-bottom: 10px;
+    font-size: 1.8em;
+    color: #ffffff; /* Cambia el color a blanco para mayor contraste */
+    text-shadow: 2px 2px 4px rgba(38, 38, 39, 0.6); /* Sombra para destacar */
 }
 
 .banner-text {
-    font-size: 1.2em;
-    margin-bottom: 20px;
+    font-size: 1em;
+    color: #ffffff;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+    line-height: 1.4;
+    text-align: center;
+    padding: 0 10px;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .banner-button {
@@ -241,6 +259,11 @@ search-container {
 
 .banner-button:hover {
     background-color: #333;
+}
+
+.banner-container {
+    position: relative;
+    z-index: 2; /* Asegura que el texto esté encima del overlay */
 }
 
 /* Featured Products */
@@ -404,6 +427,17 @@ search-container {
         align-items: center;
         justify-content: center;
         overflow: hidden;
+    }
+
+    .banner-text {
+        font-size: 1em; 
+        line-height: 1.4; 
+        text-align: center; 
+        padding: 0 10px;
+    }
+
+    .banner-title {
+        font-size: 1.5em; 
     }
 
     .nav.show {
