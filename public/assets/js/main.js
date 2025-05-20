@@ -48,3 +48,13 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 });
+
+// Función para cargar las vistas
+function cargarVista(archivo) {
+        fetch(archivo)
+          .then((r) => r.text())
+          .then(
+            (html) => (document.getElementById("main-content").innerHTML = html)
+          );
+      }
+      window.onload = () => cargarVista("index.html");
