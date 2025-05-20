@@ -88,3 +88,5 @@ CREATE TABLE Pagos (
     FOREIGN KEY (pedido_id) REFERENCES Pedidos(id),
     FOREIGN KEY (metodo_pago_id) REFERENCES MetodosPago(id)
 );
+
+SELECT * FROM usuarios;
