@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ZonaUTP</title>
+    <title>ZonaUTP - Pagina Principal</title>
     <link rel="stylesheet" href="../css/style.css" />
     <script src="../js/main.js" defer></script>
     <link
@@ -16,7 +16,7 @@
     <header class="header">
       <div class="container header-container">
         <div class="logo-container">
-          <img src="../img/LogoPrincipal.png" alt="Logo" class="logo" />
+          <img src="../img/LogoPrincipal.png" alt="Logo" class="logo"/>
           <h1 class="site-title">zona-UTP</h1>
         </div>
 
@@ -49,6 +49,10 @@
         <div class="user-menu">
           <i class="fas fa-user-circle" id="user-icon"></i>
           <div class="user-options" id="user-options">
+            <a href="login.html" class="user-option">
+              <i class="fas fa-user"></i> Login
+            </a>
+            <!-- <div class="user-options" id="user-options">
             <a href="perfil.html" class="user-option">
               <i class="fas fa-user"></i> Perfil
             </a>
@@ -57,7 +61,8 @@
             </a>
             <a href="logout.html" class="user-option-logout">
               <i class="fas fa-sign-out-alt"></i> Cerrar sesión
-            </a>
+            </a> -->
+          </div>
           </div>
         </div>
       </div>
@@ -78,72 +83,131 @@
 
       <!-- Sección de Productos Destacados que se mostrara en la pagina principal -->
       <section class="productos-destacados">
-        <div class="container">
-          <h3 class="section-title">Productos Destacados</h3>
-          <div class="productos-grid">
-            <!-- Producto 1 estatico-->
-            <div class="producto-card">
-              <img
-                src="../img/merch/ropa/jacket_negro.png"
-                class="producto-img"
-              />
-              <div class="producto-info">
-                <h5 class="producto-title">Chaquetas UTP</h5>
-                <p class="producto-description"></p>
-                <p class="producto-price">$15.00</p>
-                <button class="producto-button">
-                  Añadir <i class="fas fa-shopping-cart"></i>
-                </button>
-              </div>
-            </div>
-            <!-- Producto 2 estatico -->
-            <div class="producto-card">
-              <img
-                src="../img/merch/ropa/gorra_negra.png"
-                class="producto-img"
-              />
-              <div class="producto-info">
-                <h5 class="producto-title">Gorra UTP</h5>
-                <p class="producto-description"></p>
-                <p class="producto-price">$10.00</p>
-                <button class="producto-button">
-                  Añadir <i class="fas fa-shopping-cart"></i>
-                </button>
-              </div>
-            </div>
-            <!-- Producto 3 estatico-->
-            <div class="producto-card">
-              <img
-                src="../img/merch/accesorios/termo.png"
-                class="producto-img"
-              />
-              <div class="producto-info">
-                <h5 class="producto-title">Termo UTP</h5>
-                <p class="producto-description"></p>
-                <p class="producto-price">$12.00</p>
-                <button class="producto-button">
-                  Añadir <i class="fas fa-shopping-cart"></i>
-                </button>
-              </div>
-            </div>
-            <!-- Producto 4 estatico-->
-            <div class="producto-card">
-              <img
-                src="../img/merch/accesorios/llavero.png"
-                class="producto-img"
-              />
-              <div class="producto-info">
-                <h5 class="producto-title">Llaveros UTP</h5>
-                <p class="producto-description"></p>
-                <p class="producto-price">$25.00</p>
-                <button class="producto-button">
-                  Añadir <i class="fas fa-shopping-cart"></i>
-                </button>
-              </div>
-            </div>
+  <div class="container">
+    <h3 class="section-title">Productos Destacados</h3>
+    <div class="carrusel-sombra">
+      <div class="productos-grid">
+        <!-- Producto 1 -->
+        <div class="producto-card">
+          <img src="../img/merch/ropa/jacket_negro.png" class="producto-img" />
+          <div class="producto-info">
+            <h5 class="producto-title">Chaquetas UTP</h5>
+            <p class="producto-description"></p>
+            <p class="producto-price">$15.00</p>
+            <button class="producto-button">
+              Añadir <i class="fas fa-shopping-cart"></i>
+            </button>
           </div>
         </div>
-      </section>
+        <!-- Producto 2 -->
+        <div class="producto-card">
+          <img src="../img/merch/ropa/gorra_negra.png" class="producto-img" />
+          <div class="producto-info">
+            <h5 class="producto-title">Gorra UTP</h5>
+            <p class="producto-description"></p>
+            <p class="producto-price">$10.00</p>
+            <button class="producto-button">
+              Añadir <i class="fas fa-shopping-cart"></i>
+            </button>
+          </div>
+        </div>
+        <!-- Producto 3 -->
+        <div class="producto-card">
+          <img src="../img/merch/accesorios/termo.png" class="producto-img" />
+          <div class="producto-info">
+            <h5 class="producto-title">Termo UTP</h5>
+            <p class="producto-description"></p>
+            <p class="producto-price">$12.00</p>
+            <button class="producto-button">
+              Añadir <i class="fas fa-shopping-cart"></i>
+            </button>
+          </div>
+        </div>
+        <!-- Producto 4 -->
+        <div class="producto-card">
+          <img src="../img/merch/accesorios/llavero.png" class="producto-img" />
+          <div class="producto-info">
+            <h5 class="producto-title">Llaveros UTP</h5>
+            <p class="producto-description"></p>
+            <p class="producto-price">$25.00</p>
+            <button class="producto-button">
+              Añadir <i class="fas fa-shopping-cart"></i>
+            </button>
+          </div>
+        </div>
+        <div class="producto-card">
+          <img src="../img/merch/accesorios/bolsa1.png" class="producto-img" />
+          <div class="producto-info">
+            <h5 class="producto-title">Bolsa UTP</h5>
+            <p class="producto-description"></p>
+            <p class="producto-price">$25.00</p>
+            <button class="producto-button">
+              Añadir <i class="fas fa-shopping-cart"></i>
+            </button>
+          </div>
+        </div>
+        <div class="producto-card">
+          <img src="../img/merch/ropa/jacket_negro.png" class="producto-img" />
+          <div class="producto-info">
+            <h5 class="producto-title">Chaquetas UTP</h5>
+            <p class="producto-description"></p>
+            <p class="producto-price">$15.00</p>
+            <button class="producto-button">
+              Añadir <i class="fas fa-shopping-cart"></i>
+            </button>
+          </div>
+        </div>
+        <!-- Producto 2 -->
+        <div class="producto-card">
+          <img src="../img/merch/ropa/gorra_negra.png" class="producto-img" />
+          <div class="producto-info">
+            <h5 class="producto-title">Gorra UTP</h5>
+            <p class="producto-description"></p>
+            <p class="producto-price">$10.00</p>
+            <button class="producto-button">
+              Añadir <i class="fas fa-shopping-cart"></i>
+            </button>
+          </div>
+        </div>
+        <!-- Producto 3 -->
+        <div class="producto-card">
+          <img src="../img/merch/accesorios/termo.png" class="producto-img" />
+          <div class="producto-info">
+            <h5 class="producto-title">Termo UTP</h5>
+            <p class="producto-description"></p>
+            <p class="producto-price">$12.00</p>
+            <button class="producto-button">
+              Añadir <i class="fas fa-shopping-cart"></i>
+            </button>
+          </div>
+        </div>
+        <!-- Producto 4 -->
+        <div class="producto-card">
+          <img src="../img/merch/accesorios/llavero.png" class="producto-img" />
+          <div class="producto-info">
+            <h5 class="producto-title">Llaveros UTP</h5>
+            <p class="producto-description"></p>
+            <p class="producto-price">$25.00</p>
+            <button class="producto-button">
+              Añadir <i class="fas fa-shopping-cart"></i>
+            </button>
+          </div>
+        </div>
+        <div class="producto-card">
+          <img src="../img/merch/accesorios/bolsa1.png" class="producto-img" />
+          <div class="producto-info">
+            <h5 class="producto-title">Bolsa UTP</h5>
+            <p class="producto-description"></p>
+            <p class="producto-price">$25.00</p>
+            <button class="producto-button">
+              Añadir <i class="fas fa-shopping-cart"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
       <!-- Sección de Categorías -->
       <section class="categorias">
@@ -175,7 +239,7 @@
 
     <footer class="footer">
       <p class="footer-text">
-        Contacto: utp@utp.ac.pa | Redes Sociales: Facebook, Twitter, Instagram
+        Contacto: soporte@utp.ac.pa | Redes Sociales: Facebook, Twitter, Instagram
       </p>
       <p class="footer-text">
         © 2025 UTP Panamá - Todos los derechos reservados.
