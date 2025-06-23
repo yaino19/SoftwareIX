@@ -211,6 +211,61 @@ if (!isset($_SESSION)) session_start(); ?>
                   </button>
                 </div>
               </div>
+              <div class="producto-card">
+                <img src="./public/assets/img/merch/ropa/jacket_negro.png" class="producto-img" alt="Chaqueta UTP" />
+                <div class="producto-info">
+                  <h5 class="producto-title">Chaquetas UTP</h5>
+                  <p class="producto-description"></p>
+                  <p class="producto-price">$15.00</p>
+                  <button class="producto-button">
+                    Añadir <i class="fas fa-shopping-cart"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="producto-card">
+                <img src="./public/assets/img/merch/ropa/gorra_negra.png" class="producto-img" alt="Gorra UTP" />
+                <div class="producto-info">
+                  <h5 class="producto-title">Gorra UTP</h5>
+                  <p class="producto-description"></p>
+                  <p class="producto-price">$10.00</p>
+                  <button class="producto-button">
+                    Añadir <i class="fas fa-shopping-cart"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="producto-card">
+                <img src="./public/assets/img/merch/accesorios/termo.png" class="producto-img" alt="Termo UTP" />
+                <div class="producto-info">
+                  <h5 class="producto-title">Termo UTP</h5>
+                  <p class="producto-description"></p>
+                  <p class="producto-price">$12.00</p>
+                  <button class="producto-button">
+                    Añadir <i class="fas fa-shopping-cart"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="producto-card">
+                <img src="./public/assets/img/merch/accesorios/llavero.png" class="producto-img" alt="Llavero UTP" />
+                <div class="producto-info">
+                  <h5 class="producto-title">Llaveros UTP</h5>
+                  <p class="producto-description"></p>
+                  <p class="producto-price">$25.00</p>
+                  <button class="producto-button">
+                    Añadir <i class="fas fa-shopping-cart"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="producto-card">
+                <img src="./public/assets/img/merch/accesorios/bolsa1.png" class="producto-img" alt="Bolsa UTP" />
+                <div class="producto-info">
+                  <h5 class="producto-title">Bolsa UTP</h5>
+                  <p class="producto-description"></p>
+                  <p class="producto-price">$25.00</p>
+                  <button class="producto-button">
+                    Añadir <i class="fas fa-shopping-cart"></i>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>

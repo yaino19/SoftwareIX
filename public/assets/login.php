@@ -25,6 +25,20 @@ $logoutModal = isset($_GET['logout']) && $_GET['logout'] == 1;
     />
     <link rel="icon" href="./img/LogoPrincipal.png" />
     <style>
+          body {
+            font-family: 'Inter', Arial, Helvetica, sans-serif;
+          }
+
+        .login-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            max-width: 520px;
+            padding: 20px;
+            z-index: 10;
+        }
       .modal-center {
         position: fixed;
         z-index: 9999;
@@ -248,7 +262,7 @@ $logoutModal = isset($_GET['logout']) && $_GET['logout'] == 1;
     if (this.checked) {
         labelIdentidad.textContent = 'Correo Institucional';
         iconoIdentidad.className = 'fas fa-envelope input-icon';
-        inputIdentidad = crearInput('email', 'email', 'usuario@utp.ac.pa', 'email');
+        inputIdentidad = crearInput('email', 'email', 'Tu correo @utp', 'email');
     } else {
         labelIdentidad.textContent = 'Correo electrónico';
         iconoIdentidad.className = 'fas fa-envelope input-icon';
