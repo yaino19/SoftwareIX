@@ -58,3 +58,5 @@ function cargarVista(archivo) {
           );
       }
       window.onload = () => cargarVista("index.html");
+
+      

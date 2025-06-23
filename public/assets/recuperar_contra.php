@@ -15,7 +15,7 @@
     />
     <link rel="icon" href="../img/LogoPrincipal.png" />
   </head>
-  <body>
+  <body style="background: url('./img/fondoLogin.png') no-repeat center center fixed; background-size: cover;">
     <div class="login-container">
       <div class="login-card">
         <div class="login-header">

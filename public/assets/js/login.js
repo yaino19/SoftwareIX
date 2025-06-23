@@ -3,7 +3,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const labelIdentidad = document.getElementById('labelIdentidad');
     const inputIdentidadContainer = document.getElementById('inputIdentidadContainer');
     const iconoIdentidad = document.getElementById('iconoIdentidad');
-    const recordarUsuario = document.getElementById('rememberMe');
     const formularioLogin = document.getElementById('loginForm');
     const errorCorreo = document.getElementById('emailError');
     let inputIdentidad = document.getElementById('identidad');
@@ -21,24 +20,23 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     esEstudianteUTP.addEventListener('change', function () {
-        inputIdentidadContainer.removeChild(inputIdentidad);
+    inputIdentidadContainer.removeChild(inputIdentidad);
 
-        if (this.checked) {
-            labelIdentidad.textContent = 'Correo Institucional';
-            iconoIdentidad.className = 'fas fa-envelope input-icon';
-            inputIdentidad = crearInput('email', 'email', 'usuario@utp.ac.pa', 'email');
-        } else {
-            labelIdentidad.textContent = 'Nombre de usuario';
-            iconoIdentidad.className = 'fas fa-user input-icon';
-            inputIdentidad = crearInput('text', 'username', 'Tu nombre de usuario', 'username');
-        }
-        inputIdentidadContainer.appendChild(inputIdentidad);
+    if (this.checked) {
+        labelIdentidad.textContent = 'Correo Institucional';
+        iconoIdentidad.className = 'fas fa-envelope input-icon';
+        inputIdentidad = crearInput('email', 'email', 'usuario@utp.ac.pa', 'email');
+    } else {
+        labelIdentidad.textContent = 'Correo electrónico';
+        iconoIdentidad.className = 'fas fa-envelope input-icon';
+        inputIdentidad = crearInput('email', 'email', 'Tu correo electrónico', 'email');
+    }
+    inputIdentidadContainer.appendChild(inputIdentidad);
 
-        // Limpiar errores y valor
-        if (errorCorreo) errorCorreo.textContent = '';
-        inputIdentidad.style.borderColor = '#e2e8f0';
-        inputIdentidad.value = '';
-    });
+    if (errorCorreo) errorCorreo.textContent = '';
+    inputIdentidad.style.borderColor = '#e2e8f0';
+    inputIdentidad.value = '';
+});
 
     function validarIdentidad() {
         const valor = inputIdentidad.value.trim();
@@ -46,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (errorCorreo) errorCorreo.textContent = '';
 
         if (!valor) {
-            if (errorCorreo) errorCorreo.textContent = esEstudianteUTP.checked ? 'El correo es requerido' : 'El nombre de usuario es requerido';
+            if (errorCorreo) errorCorreo.textContent = 'El correo es requerido';
             inputIdentidad.style.borderColor = '#ef4444';
             return false;
         }
@@ -54,6 +52,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const regexUTP = /^[a-zA-Z0-9._%+-]+@utp\.ac\.pa$/;
             if (!regexUTP.test(valor)) {
                 if (errorCorreo) errorCorreo.textContent = 'Debe usar un correo institucional válido (@utp.ac.pa)';
+                inputIdentidad.style.borderColor = '#ef4444';
+                return false;
+            }
+        } else {
+            // Validar correo general
+            const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!regexEmail.test(valor)) {
+                if (errorCorreo) errorCorreo.textContent = 'Ingrese un correo válido';
                 inputIdentidad.style.borderColor = '#ef4444';
                 return false;
             }
@@ -68,45 +74,32 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.target.id === 'identidad') validarIdentidad();
     }, true);
 
-    // Cargar usuario guardado si existe
-    const usuarioGuardado = localStorage.getItem('rememberedUser');
-    if (usuarioGuardado) {
-        inputIdentidad.value = usuarioGuardado;
-        recordarUsuario.checked = true;
-    }
-
     formularioLogin.addEventListener('submit', function(e) {
         if (!validarIdentidad()) {
             e.preventDefault();
-        } else {
-            if (recordarUsuario.checked) {
-                localStorage.setItem('rememberedUser', inputIdentidad.value.trim());
-            } else {
-                localStorage.removeItem('rememberedUser');
-            }
         }
     });
-});
-const googleBtnBlock = document.getElementById('googleBtnBlock');
-    if (googleBtnBlock) {
-        // Inicialmente oculto si está seleccionado "Correo Institucional"
-        googleBtnBlock.style.display = esEstudianteUTP.checked ? 'none' : 'block';
 
+    // Google button show/hide
+    const googleBtnBlock = document.getElementById('googleBtnBlock');
+    if (googleBtnBlock && esEstudianteUTP) {
+        googleBtnBlock.style.display = esEstudianteUTP.checked ? 'none' : 'block';
         esEstudianteUTP.addEventListener('change', function () {
             googleBtnBlock.style.display = this.checked ? 'none' : 'block';
         });
     }
+});
 
 // Mostrar/ocultar contraseña
 document.addEventListener('DOMContentLoaded', () => {
-  const passwordInput = document.getElementById('password');
-  const togglePassword = document.getElementById('togglePassword');
-  if (togglePassword && passwordInput) {
-    togglePassword.addEventListener('click', function () {
-      const isVisible = passwordInput.type === 'text';
-      passwordInput.type = isVisible ? 'password' : 'text';
-      this.classList.toggle('fa-eye');
-      this.classList.toggle('fa-eye-slash');
-    });
-  }
+    const passwordInput = document.getElementById('password');
+    const togglePassword = document.getElementById('togglePassword');
+    if (togglePassword && passwordInput) {
+        togglePassword.addEventListener('click', function () {
+            const isVisible = passwordInput.type === 'text';
+            passwordInput.type = isVisible ? 'password' : 'text';
+            this.classList.toggle('fa-eye');
+            this.classList.toggle('fa-eye-slash');
+        });
+    }
 });

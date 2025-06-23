@@ -21,18 +21,6 @@
     --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: url('/public/assets/img/fondoLogin.png') no-repeat center center fixed;
-    background-size: cover;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    overflow-x: hidden;
-    backdrop-filter: blur(2px);
-}
 
 .login-container {
     width: 100%;
@@ -438,47 +426,53 @@ h3 {
     text-decoration: underline;
 }
 
-.modal {
-  display: none;
+.simple-modal {
   position: fixed;
   z-index: 9999;
-  left: 0; top: 0;
-  width: 100vw; height: 100vh;
-  background: rgba(0,0,0,0.4);
-  justify-content: center;
+  left: 0; top: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.18);
+  display: none;
   align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s;
 }
-.modal-content {
+.simple-modal.show {
+  display: flex;
+}
+.simple-modal-content {
   background: #fff;
-  padding: 40px 36px 32px 36px;
-  border-radius: 16px;
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+  padding: 32px 28px 24px 28px;
+  min-width: 320px;
+  max-width: 90vw;
   text-align: center;
   position: relative;
-  min-width: 320px;
-  max-width: 95vw;
-  box-shadow: 0 8px 32px rgba(0,128,0,0.10);
-  border: 2px solid #22c55e;
+  animation: fadeInModal 0.2s;
 }
-.close-modal {
+@keyframes fadeInModal {
+  from { transform: translateY(-30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.simple-modal-close {
   position: absolute;
-  right: 18px;
-  top: 10px;
-  font-size: 1.7em;
+  top: 10px; right: 14px;
+  background: none;
+  border: none;
+  font-size: 1.5em;
+  color: #888;
   cursor: pointer;
-  color: #22c55e;
+  transition: color 0.2s;
 }
-.modal-success-icon {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 18px;
+.simple-modal-close:hover {
+  color: #e74c3c;
 }
-.modal-success-icon i {
-  font-size: 3.5em;
-  color: #22c55e;
-  background: #e7fbe9;
-  border-radius: 50%;
-  padding: 18px;
+.simple-modal-message p {
+  margin: 0;
+  color: #222;
+  font-size: 1.08em;
+  font-weight: 500;
+  line-height: 1.5;
 }
 
 
