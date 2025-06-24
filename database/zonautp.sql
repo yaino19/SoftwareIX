@@ -90,6 +90,7 @@ CREATE TABLE IF NOT EXISTS Pagos (
     FOREIGN KEY (metodo_pago_id) REFERENCES MetodosPago(id)
 );
 
+
 -- Tabla para gestionar sesiones de usuario
 CREATE TABLE IF NOT EXISTS GestionSesion (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -305,3 +306,4 @@ BEGIN
 END $$
 
 DELIMITER ;
+
