@@ -576,7 +576,7 @@ button,
 [type=button],
 [type=reset],
 [type=submit] {
-  -webkit-appearance: button;
+-webkit-appearance: button;
 }
 button:not(:disabled),
 [type=button]:not(:disabled),
@@ -3008,6 +3008,18 @@ textarea.form-control-lg {
   background-color: var(--bs-btn-bg);
   border-color: var(--bs-btn-border-color);
 }
+
+.btn-filtro {
+    background-color: #3c0f8a;
+    color: #fff;
+    border: none;
+    transition: background 0.2s;
+}
+.btn-filtro:hover, .btn-filtro:focus {
+    background-color: #5b21b6;
+    color: #fff;
+}
+
 .btn:focus-visible {
   color: var(--bs-btn-hover-color);
   background-color: var(--bs-btn-hover-bg);
@@ -4468,7 +4480,25 @@ textarea.form-control-lg {
 .card-img-bottom {
   width: 100%;
 }
+.card-img-top {
+    height: 120px; /* o el valor que prefieras, por ejemplo 100px */
+    object-fit: contain;
+}
 
+.card.h-100 {
+    min-height: unset;
+    height: 260px; /* Ajusta este valor según lo que necesites */
+    max-height: 280px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.card-body.p-4 {
+    padding: 0.5rem !important;
+}
+.card-footer.p-4 {
+    padding: 0.5rem !important;
+}
 .card-img,
 .card-img-top {
   border-top-left-radius: var(--bs-card-inner-border-radius);

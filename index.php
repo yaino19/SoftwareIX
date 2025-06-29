@@ -107,7 +107,7 @@ if (!isset($_SESSION)) session_start(); ?>
               <a class="nav-link" href="index.html">Inicio</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="productos.html">Productos</a>
+              <a class="nav-link" href="../SoftwareIX/public/assets/productos.php">Productos</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="contacto.html">Contacto</a>
