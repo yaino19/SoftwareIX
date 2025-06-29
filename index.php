@@ -277,7 +277,7 @@ if (!isset($_SESSION)) session_start(); ?>
           <h3 class="section-title">Explora por Categorías</h3>
           <div class="categorias-grid">
             <div class="categoria-item">
-              <a href="productos.html"></a>
+              <a href="../productos.html"></a>
               <h5 class="categoria-title">Ropa</h5>
               <p class="categoria-description">
                 Encuentra camisetas, sudaderas, y más.
