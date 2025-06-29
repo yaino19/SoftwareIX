@@ -164,7 +164,7 @@ a:hover {
 #user-icon:hover {
     transform: scale(1.2);
 }
-
+/* Elimina el segundo header, solo deja el primero */
 .user-options {
     display: none;
     position: absolute;
@@ -239,16 +239,7 @@ a:hover {
     padding: 0 10px;
 }
 
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
+/* Removed duplicate @keyframes fadeIn to prevent conflicts */
 
 .banner-button {
     background-color: #100418;
