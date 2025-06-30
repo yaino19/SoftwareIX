@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (this.checked) {
         labelIdentidad.textContent = 'Correo Institucional';
         iconoIdentidad.className = 'fas fa-envelope input-icon';
-        inputIdentidad = crearInput('email', 'email', 'usuario@utp.ac.pa', 'email');
+        inputIdentidad = crearInput('email', 'email', 'Tu correo institucional', 'email');
     } else {
         labelIdentidad.textContent = 'Correo electrónico';
         iconoIdentidad.className = 'fas fa-envelope input-icon';
@@ -90,16 +90,3 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// Mostrar/ocultar contraseña
-document.addEventListener('DOMContentLoaded', () => {
-    const passwordInput = document.getElementById('password');
-    const togglePassword = document.getElementById('togglePassword');
-    if (togglePassword && passwordInput) {
-        togglePassword.addEventListener('click', function () {
-            const isVisible = passwordInput.type === 'text';
-            passwordInput.type = isVisible ? 'password' : 'text';
-            this.classList.toggle('fa-eye');
-            this.classList.toggle('fa-eye-slash');
-        });
-    }
-});
