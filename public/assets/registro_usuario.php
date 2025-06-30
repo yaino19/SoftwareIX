@@ -191,13 +191,6 @@
               ></i>
             </div>
           </div>
-          <!-- Botón Google arriba del formulario -->
-          <div style="display: flex; justify-content: center; margin-bottom: 8px; margin-top: 8px;">
-            <button type="button" id="googleLoginBtn" class="google-btn-simple">
-              <i class="fab fa-google"></i>
-              <span style="margin-left: 8px;">Registrarse con Google</span>
-            </button>
-          </div>
           <button type="submit" class="login-button" id="registerButton">
             <span class="button-text">Registrarse</span>
             <i class="fas fa-user-plus button-icon"></i>
@@ -233,7 +226,6 @@
           <a href="/SoftwareIX/public/assets/login.php" class="login-link" style="display:inline-block; margin-top:10px; color:#4f46e5; font-weight:600;">Ir a iniciar sesión</a>
         </div>
       </div>
-      <script src="./js/registro_usuario.js"></script>
       <script>
         document.addEventListener('DOMContentLoaded', function() {
           var modal = document.getElementById('exitoModal');
@@ -254,84 +246,6 @@
         });
       </script>
     <?php endif; ?>
-    <script src="./js/"></script>
-    <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
-  import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyAXsyFcYCIqk_k_pHLTwoPSDEzd_RdFlUc",
-    authDomain: "ecommerce-utp.firebaseapp.com",
-    projectId: "ecommerce-utp",
-    storageBucket: "ecommerce-utp.appspot.com",
-    messagingSenderId: "49844622966",
-    appId: "1:49844622966:web:5154fe4abb24614bea3157",
-    measurementId: "G-01BMCL2E9P"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const provider = new GoogleAuthProvider();
-
-  document.getElementById('googleLoginBtn').addEventListener('click', async function() {
-    const modalGoogle = document.getElementById('modalGoogle');
-    const modalGoogleMensaje = document.getElementById('modalGoogleMensaje');
-    const closeModalGoogle = document.getElementById('closeModalGoogle');
-    try {
-      const result = await signInWithPopup(auth, provider);
-      const user = result.user;
-      const formData = new FormData();
-      formData.append('nombre', user.displayName || '');
-      formData.append('correo', user.email);
-      formData.append('uidGoogle', user.uid);
-      const response = await fetch('register_google_controller.php', {
-        method: 'POST',
-        body: formData
-      });
-      let data;
-      try {
-        data = await response.json();
-      } catch {
-        data = { success: false, message: 'Error inesperado del servidor.' };
-      }
-      if (modalGoogle && modalGoogleMensaje) {
-        if (data.success) {
-          modalGoogleMensaje.innerHTML = '¡Registro con Google exitoso!<br>Serás redirigido al inicio de sesión.';
-        } else {
-          modalGoogleMensaje.innerHTML = data.message || 'Esta cuenta ya está registrada, puedes iniciar sesión.';
-        }
-        modalGoogle.style.display = 'flex';
-        setTimeout(() => {
-          modalGoogle.style.display = 'none';
-          window.location.href = '/SoftwareIX/public/assets/login.php';
-        }, 2200);
-        if (closeModalGoogle) {
-          closeModalGoogle.onclick = function() {
-            modalGoogle.style.display = 'none';
-            window.location.href = '/SoftwareIX/public/assets/login.php';
-          };
-        }
-      } else {
-        window.location.href = '/SoftwareIX/public/assets/login.php';
-      }
-    } catch (error) {
-      alert('Error de autenticación con Google: ' + error.message);
-    }
-  });
-
-  // Mostrar/ocultar contraseña
-document.addEventListener('DOMContentLoaded', () => {
-    const passwordInput = document.getElementById('password');
-    const togglePassword = document.getElementById('togglePassword');
-    if (togglePassword && passwordInput) {
-        togglePassword.addEventListener('click', function () {
-            const isVisible = passwordInput.type === 'text';
-            passwordInput.type = isVisible ? 'password' : 'text';
-            this.classList.toggle('fa-eye');
-            this.classList.toggle('fa-eye-slash');
-        });
-    }
-});
-</script>
+    <script src="./js/registro_usuario.js"></script>
   </body>
 </html>
