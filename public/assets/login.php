@@ -222,6 +222,7 @@ $logoutModal = isset($_GET['logout']) && $_GET['logout'] == 1;
       </div>
     </div>
 
+    <script src="./js/login.js"></script>
     <script>
       function closeModal(id) {
         var modal = document.getElementById(id);

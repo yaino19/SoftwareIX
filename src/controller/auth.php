@@ -47,10 +47,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION['usuario_id'] = $usuario['id'];
             $_SESSION['nombre'] = $usuario['nombre'];
 
-            // Registrar sesión (IP y agente de usuario)
-            $ip_address = $_SERVER['REMOTE_ADDR'];
-            $user_agent = $_SERVER['HTTP_USER_AGENT'];
-            $usuarios->registrarSesion($usuario_id, $ip_address, $user_agent);
+            // Registrar sesión (IP y agente de usuario) solo si el usuario_id es válido y distinto de 0
+            if ($usuario_id && $usuario_id > 0) {
+                $ip_address = $_SERVER['REMOTE_ADDR'];
+                $user_agent = $_SERVER['HTTP_USER_AGENT'];
+                $usuarios->registrarSesion($usuario_id, $ip_address, $user_agent);
+            }
 
             header("Location: ../../index.php");
             exit();
