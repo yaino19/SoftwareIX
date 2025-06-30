@@ -38,9 +38,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (errorCorreo) errorCorreo.textContent = '';
         inputIdentidad.style.borderColor = '#e2e8f0';
         inputIdentidad.value = '';
-        // Reasignar validadores
-        inputIdentidad.addEventListener('input', validarIdentidad);
-        inputIdentidad.addEventListener('blur', validarIdentidad);
     });
 
     function validarIdentidad() {
@@ -61,15 +58,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 return false;
             }
         } else {
-            // Validar correo general, pero NO permitir utp.ac.pa
+            // Validar correo general
             const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!regexEmail.test(valor)) {
                 if (errorCorreo) errorCorreo.textContent = 'Ingrese un correo válido';
-                inputIdentidad.style.borderColor = '#ef4444';
-                return false;
-            }
-            if (/^[^@]+@utp\.ac\.pa$/.test(valor)) {
-                if (errorCorreo) errorCorreo.textContent = 'No se permite correo institucional en este modo';
                 inputIdentidad.style.borderColor = '#ef4444';
                 return false;
             }

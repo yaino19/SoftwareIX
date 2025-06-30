@@ -236,6 +236,20 @@ $logoutModal = isset($_GET['logout']) && $_GET['logout'] == 1;
           modal.classList.add('show');
         }
       }    
+      // Mostrar/ocultar contraseña
+document.addEventListener('DOMContentLoaded', () => {
+    const passwordInput = document.getElementById('password');
+    const togglePassword = document.getElementById('togglePassword');
+    if (togglePassword && passwordInput) {
+        togglePassword.addEventListener('click', function () {
+            const isVisible = passwordInput.type === 'text';
+            passwordInput.type = isVisible ? 'password' : 'text';
+            this.classList.toggle('fa-eye');
+            this.classList.toggle('fa-eye-slash');
+        });
+    }
+});
+    
     </script>
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
@@ -280,7 +294,7 @@ $logoutModal = isset($_GET['logout']) && $_GET['logout'] == 1;
               const response = await fetch('login_google_controller.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email: user.email, uid: user.uid })
+                body: JSON.stringify({ email: user.email, uid: user.uid, nombre: user.displayName || '' })
               });
               const data = await response.json();
               if (data.success) {
@@ -318,22 +332,7 @@ $logoutModal = isset($_GET['logout']) && $_GET['logout'] == 1;
           modal.querySelector('p').innerHTML = mensaje;
           modal.classList.add('show');
         }
-      }
-      
-// Mostrar/ocultar contraseña
-document.addEventListener('DOMContentLoaded', () => {
-    const passwordInput = document.getElementById('password');
-    const togglePassword = document.getElementById('togglePassword');
-    if (togglePassword && passwordInput) {
-        togglePassword.addEventListener('click', function () {
-            const isVisible = passwordInput.type === 'text';
-            passwordInput.type = isVisible ? 'password' : 'text';
-            this.classList.toggle('fa-eye');
-            this.classList.toggle('fa-eye-slash');
-        });
-    }
-});
-      
+      }  
     </script>
     <?php if ($logoutModal): ?>
   <div class="modal-center show" id="modalLogout">
