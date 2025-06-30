@@ -307,3 +307,16 @@ END $$
 
 DELIMITER ;
 
+DELIMITER $$
+
+CREATE PROCEDURE LoginUsuario(
+    IN p_correo VARCHAR(100),
+    IN p_password VARCHAR(255)
+)
+BEGIN
+    SELECT * FROM Usuarios
+    WHERE correo = p_correo AND password = p_password
+    LIMIT 1;
+END $$
+
+DELIMITER ;

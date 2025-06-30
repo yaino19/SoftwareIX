@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ZonaUTP - Registro</title>
-    <link rel="stylesheet" href="/public/assets/css/registro_usuario.css" />
+    <link rel="stylesheet" href="./css/registro_usuario.css" />
     <link
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
       rel="stylesheet"
@@ -13,9 +13,101 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="icon" href="../img/LogoPrincipal.png" />
+    <link rel="icon" href="./img/LogoPrincipal.png" />
+    <style>
+      body {
+            font-family: 'Inter', Arial, Helvetica, sans-serif;
+          }
+      .google-btn-simple {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        background: #f5f5f5;
+        border: 1.5px solid #e2e8f0;
+        border-radius: var(--border-radius);
+        padding: 10px 0;
+        font-weight: 600;
+        color: #444;
+        font-size: 1em;
+        cursor: pointer;
+        box-shadow: none;
+        margin-bottom: 0;
+        margin-top: 0;
+        transition: background 0.18s, border-color 0.18s;
+      }
+      .google-btn-simple:hover,
+      .google-btn-simple:focus {
+        background: #ececec;
+        border-color: #d1d5db;
+        color: #222;
+      }
+      .google-btn-simple i.fab.fa-google {
+        color: #ea4335;
+        font-size: 1.2em;
+        background: transparent;
+        border-radius: 50%;
+        padding: 2px;
+      }
+      /* Modal Google sencillo */
+      .modal-google {
+        display: none;
+        position: fixed;
+        z-index: 9999;
+        left: 0; top: 0;
+        width: 100vw; height: 100vh;
+        background: rgba(0,0,0,0.18);
+        justify-content: center;
+        align-items: center;
+      }
+      .modal-google-content {
+        background: #fff;
+        padding: 28px 22px 22px 22px;
+        border-radius: 12px;
+        text-align: center;
+        position: relative;
+        min-width: 260px;
+        max-width: 95vw;
+        box-shadow: 0 4px 18px rgba(60,60,60,0.10);
+        border: 1.5px solid #e2e8f0;
+      }
+      .close-modal-google {
+        position: absolute;
+        right: 12px;
+        top: 8px;
+        font-size: 1.3em;
+        cursor: pointer;
+        color: #888;
+      }
+      .modal-google-icon {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+      .modal-google-icon i {
+        font-size: 2.2em;
+        color: #ea4335;
+        background: #f5f5f5;
+        border-radius: 50%;
+        padding: 8px;
+      }
+      .modal-google-success {
+        color: #222;
+        font-size: 1em;
+        margin-bottom: 8px;
+      }
+      .modal-google-link {
+        display: inline-block;
+        margin-top: 8px;
+        color: #ea4335;
+        font-weight: 600;
+        text-decoration: none;
+        font-size: 0.98em;
+      }
+    </style>
   </head>
-  <body>
+  <body style="background: url('./img/fondoLogin.png') no-repeat center center fixed; background-size: cover;">
     <div class="registro-card-split">
       <div class="registro-left">
         <div class="profile-icon-bg">
@@ -29,7 +121,12 @@
         </p>
       </div>
       <div class="registro-right">
-        <form class="login-form" id="registerForm" autocomplete="off">
+        <?php if (isset($_GET['error'])): ?>
+          <div class="error-message" style="color: red; margin-bottom: 10px; text-align:center;">
+            <?php echo htmlspecialchars($_GET['error']); ?>
+          </div>
+        <?php endif; ?>
+        <form class="login-form" id="registerForm" autocomplete="off" action="register_controller.php" method="POST">
           <div class="registro-form-grid">
             <div class="form-group">
               <label for="nombre">Nombre</label>
@@ -61,20 +158,6 @@
             </div>
           </div>
           <div class="form-group">
-            <label for="username">Nombre de usuario</label>
-            <div class="input-container">
-              <i class="fas fa-user-tag input-icon"></i>
-              <input
-                type="text"
-                id="username"
-                name="username"
-                placeholder="Nombre de usuario"
-                required
-                autocomplete="username"
-              />
-            </div>
-          </div>
-          <div class="form-group">
             <label for="correo">Correo</label>
             <div class="input-container">
               <i class="fas fa-envelope input-icon"></i>
@@ -88,6 +171,7 @@
               />
             </div>
           </div>
+
           <div class="form-group">
             <label for="password">Contraseña</label>
             <div class="input-container">
@@ -103,51 +187,15 @@
               <i
                 class="fas fa-eye-slash toggle-password"
                 id="togglePassword"
+                style="cursor:pointer;"
               ></i>
             </div>
           </div>
-          <div
-            class="form-group"
-            style="margin: 24px 0 12px 0; text-align: center"
-          >
-            <div style="display: flex; align-items: center; gap: 10px">
-              <hr
-                style="flex: 1; border: none; border-top: 1px solid #e2e8f0"
-              />
-              <span style="color: #a0aec0; font-weight: 600; font-size: 0.95em"
-                >o</span
-              >
-              <hr
-                style="flex: 1; border: none; border-top: 1px solid #e2e8f0"
-              />
-            </div>
-            <button
-              type="button"
-              id="googleLoginBtn"
-              class="google-btn"
-              style="
-                margin-top: 16px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: 10px;
-                width: 100%;
-                background: #fff;
-                border: 1.5px solid #e2e8f0;
-                border-radius: 8px;
-                padding: 10px 0;
-                font-weight: 600;
-                color: #334155;
-                font-size: 1em;
-                cursor: pointer;
-                transition: box-shadow 0.2s;
-              "
-            >
-              <i
-                class="fab fa-google"
-                style="color: #ea4335; font-size: 1.2em"
-              ></i>
-              Registrarse con Google
+          <!-- Botón Google arriba del formulario -->
+          <div style="display: flex; justify-content: center; margin-bottom: 8px; margin-top: 8px;">
+            <button type="button" id="googleLoginBtn" class="google-btn-simple">
+              <i class="fab fa-google"></i>
+              <span style="margin-left: 8px;">Registrarse con Google</span>
             </button>
           </div>
           <button type="submit" class="login-button" id="registerButton">
@@ -157,67 +205,119 @@
         </form>
         <div class="login-footer">
           ¿Ya tienes cuenta?
-          <a href="login.html" class="login-link">Inicia sesión aquí</a>
+          <a href="/SoftwareIX/public/assets/login.php" class="login-link">Inicia sesión aquí</a>
         </div>
       </div>
     </div>
-    <!-- Modal de éxito -->
-    <div id="exitoModal" class="modal" style="display: none">
-      <div class="modal-content">
-        <span class="close-modal" id="closeExitoModal">&times;</span>
-        <div class="modal-success-icon">
-          <i class="fas fa-check"></i>
-        </div>
-        <p id="exitoMensaje">
-          ¡Registro exitoso!<br />Serás redirigido al inicio de sesión.
-        </p>
-      </div>
+    <!-- Modal Google personalizado -->
+<div id="modalGoogle" class="modal-google">
+  <div class="modal-google-content">
+    <span class="close-modal-google" id="closeModalGoogle">&times;</span>
+    <div class="modal-google-icon">
+      <i class="fab fa-google"></i>
     </div>
-    <script src="../js/registro_usuario.js"></script>
+    <p id="modalGoogleMensaje" class="modal-google-success"></p>
+    <a href="/SoftwareIX/public/assets/login.php" class="modal-google-link">Ir a iniciar sesión</a>
+  </div>
+</div>
+    <?php if (isset($_GET['success'])): ?>
+      <div id="exitoModal" class="modal" style="display: flex; align-items:center; justify-content:center; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.3); z-index:9999;">
+        <div class="modal-content" style="background:#fff; padding:30px 40px; border-radius:10px; text-align:center; position:relative; min-width:300px;">
+          <span class="close-modal" id="closeExitoModal" style="position:absolute; top:10px; right:15px; font-size:1.5em; cursor:pointer;">&times;</span>
+          <div class="modal-success-icon" style="font-size:2.5em; color:green; margin-bottom:10px;">
+            <i class="fas fa-check"></i>
+          </div>
+          <p id="exitoMensaje" style="font-size:1.1em; color:#222; margin-bottom:10px;">
+            <?php echo htmlspecialchars($_GET['success']); ?>
+          </p>
+          <a href="/SoftwareIX/public/assets/login.php" class="login-link" style="display:inline-block; margin-top:10px; color:#4f46e5; font-weight:600;">Ir a iniciar sesión</a>
+        </div>
+      </div>
+      <script src="./js/registro_usuario.js"></script>
+      <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          var modal = document.getElementById('exitoModal');
+          var closeBtn = document.getElementById('closeExitoModal');
+          var redirectToLogin = function() {
+            window.location.href = '/SoftwareIX/public/assets/login.php';
+          };
+          if (closeBtn) {
+            closeBtn.onclick = function() {
+              modal.style.display = 'none';
+              setTimeout(redirectToLogin, 500);
+            };
+          }
+          setTimeout(function() {
+            if (modal) modal.style.display = 'none';
+            redirectToLogin();
+          }, 2000); // Cierra el modal después de 2 segundos
+        });
+      </script>
+    <?php endif; ?>
+    <script src="./js/"></script>
     <script type="module">
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
-      import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-analytics.js";
-      import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
+  import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
 
-      const firebaseConfig = {
-        apiKey: "AIzaSyAXsyFcYCIqk_k_pHLTwoPSDEzd_RdFlUc",
-        authDomain: "ecommerce-utp.firebaseapp.com",
-        projectId: "ecommerce-utp",
-        storageBucket: "ecommerce-utp.firebasestorage.app",
-        messagingSenderId: "49844622966",
-        appId: "1:49844622966:web:5154fe4abb24614bea3157",
-        measurementId: "G-01BMCL2E9P"
-      };
+  const firebaseConfig = {
+    apiKey: "AIzaSyAXsyFcYCIqk_k_pHLTwoPSDEzd_RdFlUc",
+    authDomain: "ecommerce-utp.firebaseapp.com",
+    projectId: "ecommerce-utp",
+    storageBucket: "ecommerce-utp.appspot.com",
+    messagingSenderId: "49844622966",
+    appId: "1:49844622966:web:5154fe4abb24614bea3157",
+    measurementId: "G-01BMCL2E9P"
+  };
 
-      const app = initializeApp(firebaseConfig);
-      const analytics = getAnalytics(app);
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const provider = new GoogleAuthProvider();
 
-      // Google Auth
-      const auth = getAuth(app);
-      const provider = new GoogleAuthProvider();
-
-      document.addEventListener('DOMContentLoaded', () => {
-        const googleBtn = document.getElementById('googleLoginBtn');
-        if (googleBtn) {
-          googleBtn.addEventListener('click', async (e) => {
-            e.preventDefault();
-            try {
-              const result = await signInWithPopup(auth, provider);
-              // Usuario autenticado con Google
-              const user = result.user;
-              // Mostrar modal de éxito y redirigir
-              const modal = document.getElementById('exitoModal');
-              modal.style.display = 'flex';
-              setTimeout(() => {
-                modal.style.display = 'none';
-                window.location.href = "login.html";
-              }, 2000);
-            } catch (error) {
-              alert('Error de autenticación con Google: ' + error.message);
-            }
-          });
-        }
+  document.getElementById('googleLoginBtn').addEventListener('click', async function() {
+    const modalGoogle = document.getElementById('modalGoogle');
+    const modalGoogleMensaje = document.getElementById('modalGoogleMensaje');
+    const closeModalGoogle = document.getElementById('closeModalGoogle');
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      const formData = new FormData();
+      formData.append('nombre', user.displayName || '');
+      formData.append('correo', user.email);
+      formData.append('uidGoogle', user.uid);
+      const response = await fetch('register_google_controller.php', {
+        method: 'POST',
+        body: formData
       });
-    </script>
+      let data;
+      try {
+        data = await response.json();
+      } catch {
+        data = { success: false, message: 'Error inesperado del servidor.' };
+      }
+      if (modalGoogle && modalGoogleMensaje) {
+        if (data.success) {
+          modalGoogleMensaje.innerHTML = '¡Registro con Google exitoso!<br>Serás redirigido al inicio de sesión.';
+        } else {
+          modalGoogleMensaje.innerHTML = data.message || 'Esta cuenta ya está registrada, puedes iniciar sesión.';
+        }
+        modalGoogle.style.display = 'flex';
+        setTimeout(() => {
+          modalGoogle.style.display = 'none';
+          window.location.href = '/SoftwareIX/public/assets/login.php';
+        }, 2200);
+        if (closeModalGoogle) {
+          closeModalGoogle.onclick = function() {
+            modalGoogle.style.display = 'none';
+            window.location.href = '/SoftwareIX/public/assets/login.php';
+          };
+        }
+      } else {
+        window.location.href = '/SoftwareIX/public/assets/login.php';
+      }
+    } catch (error) {
+      alert('Error de autenticación con Google: ' + error.message);
+    }
+  });
+</script>
   </body>
 </html>

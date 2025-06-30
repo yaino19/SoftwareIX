@@ -1,5 +1,26 @@
 <?php
-if (!isset($_SESSION)) session_start(); ?>
+if (!isset($_SESSION)) session_start();  
+
+$filtro_nombre = null;
+if (isset($_SESSION['usuario_id'])) {
+    $host = "localhost";
+    $username = "jasonpty";
+    $password = "jason27278";
+    $database = "db_zonautp";
+    $conn = new mysqli($host, $username, $password, $database);
+    if (!$conn->connect_error) {
+        $stmt = $conn->prepare("SELECT nombre FROM Usuarios WHERE id = ?");
+        $stmt->bind_param("i", $_SESSION['usuario_id']);
+        $stmt->execute();
+        $stmt->bind_result($nombre);
+        if ($stmt->fetch()) {
+            $filtro_nombre = $nombre;
+        }
+        $stmt->close();
+        $conn->close();
+    }
+}
+?>
 
 <!DOCTYPE html>
 <html lang="es">
@@ -15,6 +36,10 @@ if (!isset($_SESSION)) session_start(); ?>
     />
     <link rel="icon" href="./public/assets/img/LogoPrincipal.png" type="image/png" />
     <style>
+      body {
+            font-family: 'Inter', Arial, Helvetica, sans-serif;
+          }
+
       .modal-center {
         position: fixed;
         z-index: 9999;
@@ -104,7 +129,7 @@ if (!isset($_SESSION)) session_start(); ?>
         <nav class="nav" id="nav">
           <ul class="nav-list">
             <li class="nav-item">
-              <a class="nav-link" href="index.html">Inicio</a>
+              <a class="nav-link" href="./index.php">Inicio</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="productos.html">Productos</a>
@@ -141,7 +166,13 @@ if (!isset($_SESSION)) session_start(); ?>
       <!-- Sección de Banner con imágenes -->
       <section class="banner">
         <div class="container banner-container">
-          <h2 class="banner-title">¡Hey, bienvenido a Zona-UTP!</h2>
+          <h2 class="banner-title">
+            <?php if ($filtro_nombre): ?>
+              ¡Hey, bienvenido <?php echo htmlspecialchars($filtro_nombre); ?> !
+            <?php else: ?>
+              ¡Hey, bienvenido a Zona-UTP!
+            <?php endif; ?>
+          </h2>
           <p class="banner-text">
             Más que solo merch, aquí encuentras estilo universitario con
             actitud. ¿Listo para llevar tu orgullo UTP al siguiente nivel? 🚀

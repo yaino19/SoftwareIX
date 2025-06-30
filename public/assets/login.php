@@ -8,6 +8,7 @@ unset($_SESSION['showModal'], $_SESSION['blockModal'], $_SESSION['remainingTime'
 $logoutModal = isset($_GET['logout']) && $_GET['logout'] == 1;
 
 ?>
+
 <!DOCTYPE html>
 <html lang="es">
   <head>
@@ -138,7 +139,7 @@ $logoutModal = isset($_GET['logout']) && $_GET['logout'] == 1;
                 type="email"
                 id="identidad"
                 name="email"
-                placeholder="usuario@utp.ac.pa"
+                placeholder="Tu correo institucional"
                 required
                 autocomplete="email"
               />
@@ -173,7 +174,7 @@ $logoutModal = isset($_GET['logout']) && $_GET['logout'] == 1;
               ></i>
               Mostrar contraseña
             </label>
-            <a href="recuperar_contra.html" class="forgot-password"
+            <a href="./recuperar_contra.php" class="forgot-password"
               >¿Olvidaste tu contraseña?</a
             >
           </div>
@@ -214,7 +215,7 @@ $logoutModal = isset($_GET['logout']) && $_GET['logout'] == 1;
         <div class="login-footer">
           <p>
             ¿No tienes cuenta?
-            <a href="registro_usuario.html" class="register-link">Regístrate aquí</a>
+            <a href="./registro_usuario.php" class="register-link">Regístrate aquí</a>
           </p>
           <p class="university-info">Universidad Tecnológica de Panamá</p>
         </div>
@@ -233,114 +234,7 @@ $logoutModal = isset($_GET['logout']) && $_GET['logout'] == 1;
         if (modal) {
           modal.classList.add('show');
         }
-      }
-
-      document.addEventListener('DOMContentLoaded', () => {
-    const esEstudianteUTP = document.getElementById('esEstudianteUTP');
-    const labelIdentidad = document.getElementById('labelIdentidad');
-    const inputIdentidadContainer = document.getElementById('inputIdentidadContainer');
-    const iconoIdentidad = document.getElementById('iconoIdentidad');
-    const formularioLogin = document.getElementById('loginForm');
-    const errorCorreo = document.getElementById('emailError');
-    let inputIdentidad = document.getElementById('identidad');
-
-    function crearInput(tipo, nombre, placeholder, autocomplete) {
-        const input = document.createElement('input');
-        input.type = tipo;
-        input.id = 'identidad';
-        input.name = nombre;
-        input.placeholder = placeholder;
-        input.required = true;
-        input.autocomplete = autocomplete;
-        input.className = 'input-identidad';
-        return input;
-    }
-
-    esEstudianteUTP.addEventListener('change', function () {
-    inputIdentidadContainer.removeChild(inputIdentidad);
-
-    if (this.checked) {
-        labelIdentidad.textContent = 'Correo Institucional';
-        iconoIdentidad.className = 'fas fa-envelope input-icon';
-        inputIdentidad = crearInput('email', 'email', 'Tu correo @utp', 'email');
-    } else {
-        labelIdentidad.textContent = 'Correo electrónico';
-        iconoIdentidad.className = 'fas fa-envelope input-icon';
-        inputIdentidad = crearInput('email', 'email', 'Tu correo electrónico', 'email');
-    }
-    inputIdentidadContainer.appendChild(inputIdentidad);
-
-    if (errorCorreo) errorCorreo.textContent = '';
-    inputIdentidad.style.borderColor = '#e2e8f0';
-    inputIdentidad.value = '';
-});
-
-    function validarIdentidad() {
-        const valor = inputIdentidad.value.trim();
-        inputIdentidad.style.borderColor = '#e2e8f0';
-        if (errorCorreo) errorCorreo.textContent = '';
-
-        if (!valor) {
-            if (errorCorreo) errorCorreo.textContent = 'El correo es requerido';
-            inputIdentidad.style.borderColor = '#ef4444';
-            return false;
-        }
-        if (esEstudianteUTP.checked) {
-            const regexUTP = /^[a-zA-Z0-9._%+-]+@utp\.ac\.pa$/;
-            if (!regexUTP.test(valor)) {
-                if (errorCorreo) errorCorreo.textContent = 'Debe usar un correo institucional válido (@utp.ac.pa)';
-                inputIdentidad.style.borderColor = '#ef4444';
-                return false;
-            }
-        } else {
-            // Validar correo general
-            const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!regexEmail.test(valor)) {
-                if (errorCorreo) errorCorreo.textContent = 'Ingrese un correo válido';
-                inputIdentidad.style.borderColor = '#ef4444';
-                return false;
-            }
-        }
-        return true;
-    }
-
-    inputIdentidadContainer.addEventListener('input', function(e) {
-        if (e.target.id === 'identidad') validarIdentidad();
-    });
-    inputIdentidadContainer.addEventListener('blur', function(e) {
-        if (e.target.id === 'identidad') validarIdentidad();
-    }, true);
-
-    formularioLogin.addEventListener('submit', function(e) {
-        if (!validarIdentidad()) {
-            e.preventDefault();
-        }
-    });
-
-    // Google button show/hide
-    const googleBtnBlock = document.getElementById('googleBtnBlock');
-    if (googleBtnBlock && esEstudianteUTP) {
-        googleBtnBlock.style.display = esEstudianteUTP.checked ? 'none' : 'block';
-        esEstudianteUTP.addEventListener('change', function () {
-            googleBtnBlock.style.display = this.checked ? 'none' : 'block';
-        });
-    }
-});
-
-// Mostrar/ocultar contraseña
-document.addEventListener('DOMContentLoaded', () => {
-    const passwordInput = document.getElementById('password');
-    const togglePassword = document.getElementById('togglePassword');
-    if (togglePassword && passwordInput) {
-        togglePassword.addEventListener('click', function () {
-            const isVisible = passwordInput.type === 'text';
-            passwordInput.type = isVisible ? 'password' : 'text';
-            this.classList.toggle('fa-eye');
-            this.classList.toggle('fa-eye-slash');
-        });
-    }
-});
-      
+      }    
     </script>
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
@@ -381,24 +275,86 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
               const result = await signInWithPopup(auth, provider);
               const user = result.user;
-              window.location.href = "login.html";
+              // Enviar datos a login_google_controller.php
+              const response = await fetch('login_google_controller.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: user.email, uid: user.uid })
+              });
+              const data = await response.json();
+              if (data.success) {
+                // Redirigir a la página principal
+                window.location.href = '../../index.php';
+              } else {
+                // Mostrar modal de error personalizado
+                mostrarModalGoogle(data.message || 'No existe una cuenta asociada a este Google. Por favor regístrate.');
+              }
             } catch (error) {
-              alert('Error de autenticación con Google: ' + error.message);
+              mostrarModalGoogle('Error de autenticación con Google: ' + error.message);
             }
           });
         }
       });
+
+      // Modal Google sencillo para login
+      function mostrarModalGoogle(mensaje) {
+        let modal = document.getElementById('modalGoogleLogin');
+        if (!modal) {
+          modal = document.createElement('div');
+          modal.id = 'modalGoogleLogin';
+          modal.className = 'modal-center show';
+          modal.innerHTML = `
+            <div class="modal-content-center">
+              <button class="modal-close-center" onclick="document.getElementById('modalGoogleLogin').classList.remove('show')">&times;</button>
+              <div class="modal-message-center">
+                <i class="fab fa-google" style="color:#ea4335;font-size:2em;margin-bottom:10px;"></i>
+                <p>${mensaje}</p>
+              </div>
+            </div>
+          `;
+          document.body.appendChild(modal);
+        } else {
+          modal.querySelector('p').innerHTML = mensaje;
+          modal.classList.add('show');
+        }
+      }
+      
+// Mostrar/ocultar contraseña
+document.addEventListener('DOMContentLoaded', () => {
+    const passwordInput = document.getElementById('password');
+    const togglePassword = document.getElementById('togglePassword');
+    if (togglePassword && passwordInput) {
+        togglePassword.addEventListener('click', function () {
+            const isVisible = passwordInput.type === 'text';
+            passwordInput.type = isVisible ? 'password' : 'text';
+            this.classList.toggle('fa-eye');
+            this.classList.toggle('fa-eye-slash');
+        });
+    }
+});
+      
     </script>
     <?php if ($logoutModal): ?>
   <div class="modal-center show" id="modalLogout">
     <div class="modal-content-center">
-      <button class="modal-close-center" onclick="closeModal('modalLogout')">&times;</button>
+      <button class="modal-close-center" onclick="closeModal('modalLogout'); window.history.replaceState({}, document.title, window.location.pathname);">&times;</button>
       <div class="modal-message-center">
         <i class="fas fa-check-circle" style="color:#27ae60;font-size:2em;margin-bottom:10px;"></i>
         <p>Has cerrado sesión correctamente.</p>
       </div>
     </div>
   </div>
+  <script>
+    // Elimina ?logout=1 de la URL al cerrar el modal para que no vuelva a aparecer
+    document.addEventListener('DOMContentLoaded', function() {
+      var closeBtn = document.querySelector('#modalLogout .modal-close-center');
+      if (closeBtn) {
+        closeBtn.addEventListener('click', function() {
+          window.history.replaceState({}, document.title, window.location.pathname);
+        });
+      }
+    });
+  </script>
 <?php endif; ?>
   </body>
 </html>

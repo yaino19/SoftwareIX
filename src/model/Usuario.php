@@ -62,7 +62,7 @@ class Usuarios {
             return ['success' => false, 'message' => 'Cuenta bloqueada por intentos fallidos. Intenta más tarde.'];
         }
 
-        if ($password === $usuario['password']) {
+        if (password_verify($password, $usuario['password'])) {
             $this->registrarIntento($usuario_id, 1, $ip);
             $this->resetearIntentos($usuario_id);
             $this->registrarSesion($usuario_id, $ip, $user_agent);
@@ -70,6 +70,45 @@ class Usuarios {
         } else {
             $this->registrarIntento($usuario_id, 0, $ip);
             return ['success' => false, 'message' => 'Contraseña incorrecta'];
+        }
+    }
+
+        public function registrarUsuario($nombre, $apellido, $correo, $password) {
+        $stmt = $this->conn->prepare("SELECT id FROM Usuarios WHERE correo = ?");
+        $stmt->bind_param("s", $correo);
+        $stmt->execute();
+        $stmt->store_result();
+        if ($stmt->num_rows > 0) {
+            return ['success' => false, 'message' => 'El correo ya está registrado.'];
+        }
+        $nombreCompleto = trim($nombre . ' ' . $apellido);
+        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+        $tipoUsuarioId = 2; // usuario normal
+        $uidGoogle = null;
+        $stmt = $this->conn->prepare("CALL CrearUsuario(?, ?, ?, ?, ?)");
+        $stmt->bind_param("sssis", $nombreCompleto, $correo, $hashedPassword, $tipoUsuarioId, $uidGoogle);
+        if ($stmt->execute()) {
+            return ['success' => true, 'message' => 'Usuario registrado exitosamente.'];
+        } else {
+            return ['success' => false, 'message' => 'Error al registrar el usuario.'];
+        }
+    }
+
+    public function registrarGoogle($nombre, $correo, $uidGoogle, $tipoUsuarioId = 3) {
+        $stmt = $this->conn->prepare("SELECT id FROM Usuarios WHERE correo = ?");
+        $stmt->bind_param("s", $correo);
+        $stmt->execute();
+        $stmt->store_result();
+        if ($stmt->num_rows > 0) {
+            return ['success' => false, 'message' => 'El correo ya está registrado. Puedes iniciar sesión.'];
+        }
+        $password = null;
+        $stmt = $this->conn->prepare("CALL CrearUsuario(?, ?, ?, ?, ?)");
+        $stmt->bind_param("sssis", $nombre, $correo, $password, $tipoUsuarioId, $uidGoogle);
+        if ($stmt->execute()) {
+            return ['success' => true, 'message' => 'Usuario registrado con Google.'];
+        } else {
+            return ['success' => false, 'message' => 'Error al registrar con Google.'];
         }
     }
 }
