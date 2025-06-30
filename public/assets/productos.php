@@ -1,5 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
+  <style>
+  </style>
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
@@ -74,11 +76,22 @@
             Más que solo merch, aquí encuentras estilo universitario con
             actitud. ¿Listo para llevar tu orgullo UTP al siguiente nivel? 🚀
           </p>
-          <button class="banner-button">Explora nuestros productos</button>
         </div>
       </section>
 
 
+<br>
+    <!-- Botón de filtro -->
+    <div class="container my-2">
+  <div class="d-flex align-items-center gap-3 filtro-bar" style="background: #f3e8ff; border-radius: 18px; padding: 0.7rem 1.2rem;">
+    <span style="color: #7c3aed; font-weight: 600; letter-spacing: 1px;">
+      Filtra los productos por categoría, precio o tipo:
+    </span>
+    <button class="btn btn-filtro" id="filtro-btn">
+      <i class="fas fa-filter"></i> Filtro
+    </button>
+  </div>
+</div>
         <!-- Section-->
         <section class="py-5">
             <div class="container px-4 px-lg-5 mt-4">
