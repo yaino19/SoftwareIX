@@ -41,7 +41,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit();
     } else {
         // Verificar si el usuario existe y la contraseña es correcta
-        if ($usuario && $pass === $usuario['password']) {
+        if ($usuario && password_verify($pass, $usuario['password'])) {
             $usuarios->resetearIntentos($usuario_id);
 
             $_SESSION['usuario_id'] = $usuario['id'];
