@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
         formulario.innerHTML = `
             <div class="form-group">
                 <label for="nuevaContrasena">Nueva contraseña</label>
-                <div class="input-container">
+                <div class="input-container" style="position:relative;">
                     <i class="fas fa-lock input-icon"></i>
                     <input
                         type="password"
@@ -73,11 +73,12 @@ document.addEventListener('DOMContentLoaded', () => {
                         required
                         autocomplete="new-password"
                     />
+                    <span class="toggle-password" id="toggleNuevaContrasena" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); cursor:pointer; color:#888; font-size:1.2em;"><i class="fas fa-eye-slash"></i></span>
                 </div>
             </div>
             <div class="form-group">
                 <label for="confirmarContrasena">Confirmar contraseña</label>
-                <div class="input-container">
+                <div class="input-container" style="position:relative;">
                     <i class="fas fa-lock input-icon"></i>
                     <input
                         type="password"
@@ -87,6 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         required
                         autocomplete="new-password"
                     />
+                    <span class="toggle-password" id="toggleConfirmarContrasena" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); cursor:pointer; color:#888; font-size:1.2em;"><i class="fas fa-eye-slash"></i></span>
                 </div>
             </div>
             <button type="submit" class="login-button" id="guardarBtn">
@@ -94,6 +96,31 @@ document.addEventListener('DOMContentLoaded', () => {
                 <i class="fas fa-check button-icon"></i>
             </button>
         `;
+        // Agregar funcionalidad de mostrar/ocultar contraseña
+        setTimeout(() => {
+            const nuevaInput = document.getElementById('nuevaContrasena');
+            const confirmarInput = document.getElementById('confirmarContrasena');
+            const toggleNueva = document.getElementById('toggleNuevaContrasena');
+            const toggleConfirmar = document.getElementById('toggleConfirmarContrasena');
+            if (toggleNueva && nuevaInput) {
+                toggleNueva.addEventListener('click', function() {
+                    const icon = this.querySelector('i');
+                    const visible = nuevaInput.type === 'text';
+                    nuevaInput.type = visible ? 'password' : 'text';
+                    icon.classList.toggle('fa-eye');
+                    icon.classList.toggle('fa-eye-slash');
+                });
+            }
+            if (toggleConfirmar && confirmarInput) {
+                toggleConfirmar.addEventListener('click', function() {
+                    const icon = this.querySelector('i');
+                    const visible = confirmarInput.type === 'text';
+                    confirmarInput.type = visible ? 'password' : 'text';
+                    icon.classList.toggle('fa-eye');
+                    icon.classList.toggle('fa-eye-slash');
+                });
+            }
+        }, 0);
     }
 
     // Inicializa el formulario

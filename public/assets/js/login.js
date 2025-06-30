@@ -20,23 +20,28 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     esEstudianteUTP.addEventListener('change', function () {
-    inputIdentidadContainer.removeChild(inputIdentidad);
-
-    if (this.checked) {
-        labelIdentidad.textContent = 'Correo Institucional';
-        iconoIdentidad.className = 'fas fa-envelope input-icon';
-        inputIdentidad = crearInput('email', 'email', 'Tu correo institucional', 'email');
-    } else {
-        labelIdentidad.textContent = 'Correo electrónico';
-        iconoIdentidad.className = 'fas fa-envelope input-icon';
-        inputIdentidad = crearInput('email', 'email', 'Tu correo electrónico', 'email');
-    }
-    inputIdentidadContainer.appendChild(inputIdentidad);
-
-    if (errorCorreo) errorCorreo.textContent = '';
-    inputIdentidad.style.borderColor = '#e2e8f0';
-    inputIdentidad.value = '';
-});
+        // Actualiza la referencia del input antes de eliminarlo
+        inputIdentidad = document.getElementById('identidad');
+        if (inputIdentidad) {
+            inputIdentidadContainer.removeChild(inputIdentidad);
+        }
+        if (this.checked) {
+            labelIdentidad.textContent = 'Correo Institucional';
+            iconoIdentidad.className = 'fas fa-envelope input-icon';
+            inputIdentidad = crearInput('email', 'email', 'Tu correo institucional', 'email');
+        } else {
+            labelIdentidad.textContent = 'Correo electrónico';
+            iconoIdentidad.className = 'fas fa-envelope input-icon';
+            inputIdentidad = crearInput('email', 'email', 'Tu correo electrónico', 'email');
+        }
+        inputIdentidadContainer.appendChild(inputIdentidad);
+        if (errorCorreo) errorCorreo.textContent = '';
+        inputIdentidad.style.borderColor = '#e2e8f0';
+        inputIdentidad.value = '';
+        // Reasignar validadores
+        inputIdentidad.addEventListener('input', validarIdentidad);
+        inputIdentidad.addEventListener('blur', validarIdentidad);
+    });
 
     function validarIdentidad() {
         const valor = inputIdentidad.value.trim();
@@ -56,10 +61,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 return false;
             }
         } else {
-            // Validar correo general
+            // Validar correo general, pero NO permitir utp.ac.pa
             const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!regexEmail.test(valor)) {
                 if (errorCorreo) errorCorreo.textContent = 'Ingrese un correo válido';
+                inputIdentidad.style.borderColor = '#ef4444';
+                return false;
+            }
+            if (/^[^@]+@utp\.ac\.pa$/.test(valor)) {
+                if (errorCorreo) errorCorreo.textContent = 'No se permite correo institucional en este modo';
                 inputIdentidad.style.borderColor = '#ef4444';
                 return false;
             }
