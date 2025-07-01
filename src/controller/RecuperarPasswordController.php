@@ -12,8 +12,8 @@ class RecuperarPasswordController {
         if (empty($correo)) {
             return ['success' => false, 'message' => 'El correo es requerido.'];
         }
-        // Buscar usuario
-        $stmt = $this->conn->prepare('SELECT id FROM usuarios WHERE correo = ?');
+        // Buscar usuario (obteniendo también el nombre)
+        $stmt = $this->conn->prepare('SELECT id, nombre FROM usuarios WHERE correo = ?');
         $stmt->bind_param('s', $correo);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -30,25 +30,25 @@ class RecuperarPasswordController {
         require_once __DIR__ . '/../../vendor/autoload.php';
         $mail = new PHPMailer(true);
         try {
-            // Configuración SMTP
+            // Configuración SMTP para Gmail
             $mail->isSMTP();
-            $mail->Host = 'smtp-mail.outlook.com';
+            $mail->Host = 'smtp.gmail.com';
             $mail->SMTPAuth = true;
-            $mail->Username = 'jason.arena@utp.ac.pa';
-            $mail->Password = 'ThePana27278_utp';
+            $mail->Username = 'soporte.zonautp@gmail.com';
+            $mail->Password = 'ifbq ozdc clul jxwi';
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
             $mail->Port = 587;
             $mail->CharSet = 'UTF-8';
 
             // Remitente y destinatario
-            $mail->setFrom('jason.arena@utp.ac.pa', 'Sistema de Notificaciones');
+            $mail->setFrom('soporte.zonautp@gmail.com', 'Sistema de Notificaciones');
             $mail->addAddress($correo);
 
-            // Contenido del correo
+            // Contenido del correo con el nombre personalizado
             $mail->isHTML(true);
             $mail->Subject = 'Código de recuperación de contraseña';
-            $mail->Body    = '<p>Hola,</p><p>Tu código de recuperación es: <b>' . $codigo . '</b></p><p>Este código es válido por 15 minutos.</p>';
-            $mail->AltBody = 'Tu código de recuperación es: ' . $codigo . '. Este código es válido por 15 minutos.';
+            $mail->Body    = '<p>Hola, ' . htmlspecialchars($user['nombre']) . ',</p><p>Tu código de recuperación es: <b>' . $codigo . '</b></p><p>Este código es válido por 15 minutos.</p>';
+            $mail->AltBody = 'Hola, ' . $user['nombre'] . ',\nTu código de recuperación es: ' . $codigo . '. Este código es válido por 15 minutos.';
 
             $mail->send();
         } catch (Exception $e) {

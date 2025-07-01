@@ -29,6 +29,16 @@ if (!$nombre || !$apellido || !$correo || !$password) {
     exit;
 }
 
+// Validación de contraseña fuerte en backend
+if (
+    strlen($password) < 7 ||
+    !preg_match('/[A-Z]/', $password) ||
+    !preg_match('/[!@#$%^&*()_\-\=\[\]{};\\:\"\'\|,.<>\/?]/', $password)
+) {
+    header('Location: registro_usuario.php?error=' . urlencode('La contraseña debe tener al menos 7 caracteres, una mayúscula y un símbolo.'));
+    exit;
+}
+
 $resultado = $usuarios->registrarUsuario($nombre, $apellido, $correo, $password);
 
 if ($resultado['success']) {
