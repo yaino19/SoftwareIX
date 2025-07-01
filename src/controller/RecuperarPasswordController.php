@@ -28,6 +28,7 @@ class RecuperarPasswordController {
         
         // Enviar el código por email usando PHPMailer
         require_once __DIR__ . '/../../vendor/autoload.php';
+        require_once __DIR__ . '/../services/LoggerService.php';
         $mail = new PHPMailer(true);
         try {
             // Configuración SMTP para Gmail
@@ -51,7 +52,11 @@ class RecuperarPasswordController {
             $mail->AltBody = 'Hola, ' . $user['nombre'] . ',\nTu código de recuperación es: ' . $codigo . '. Este código es válido por 15 minutos.';
 
             $mail->send();
+            // Registrar en correos.log
+            LoggerService::log('correos.log', 'Se envió código de recuperación a ' . $correo);
         } catch (Exception $e) {
+            // Registrar en error.log
+            LoggerService::log('error.log', 'Error al enviar correo a ' . $correo . ': ' . $mail->ErrorInfo);
             return [
                 'success' => false,
                 'message' => 'No se pudo enviar el correo de recuperación a ' . htmlspecialchars($correo) . '. Error: ' . $mail->ErrorInfo

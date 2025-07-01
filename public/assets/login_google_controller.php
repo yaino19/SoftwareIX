@@ -3,6 +3,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 session_start();
+require_once __DIR__ . '/../../src/services/LoggerService.php';
 if (isset($_SESSION['usuario_id'])) {
     header('Content-Type: application/json');
     http_response_code(403);
@@ -60,6 +61,8 @@ if ($usuario) {
     $_SESSION['usuario_correo'] = $usuario['correo'];
     $_SESSION['tipo_usuario'] = $usuario['tipo_usuario_id'];
     $usuarios->registrarSesion($usuario['id'], $ip, $user_agent);
+    // Log de acceso exitoso con Google
+    LoggerService::log('accesos.log', 'Usuario ' . $correo . ' inició sesión con Google desde IP ' . $ip);
     echo json_encode(['success' => true, 'message' => 'Inicio de sesión exitoso']);
 } else {
     // Registrar usuario Google automáticamente
@@ -77,11 +80,17 @@ if ($usuario) {
             $_SESSION['usuario_correo'] = $usuario['correo'];
             $_SESSION['tipo_usuario'] = $usuario['tipo_usuario_id'];
             $usuarios->registrarSesion($usuario['id'], $ip, $user_agent);
+            // Log de registro y acceso exitoso con Google
+            LoggerService::log('accesos.log', 'Usuario ' . $correo . ' se registró e inició sesión con Google desde IP ' . $ip);
             echo json_encode(['success' => true, 'message' => 'Registro y sesión con Google exitosos']);
         } else {
+            // Log de error
+            LoggerService::log('error.log', 'Error al obtener usuario tras registro con Google para ' . $correo . ' desde IP ' . $ip);
             echo json_encode(['success' => false, 'message' => 'Error al obtener usuario tras registro con Google.']);
         }
     } else {
+        // Log de error
+        LoggerService::log('error.log', 'Error al registrar usuario Google para ' . $correo . ' desde IP ' . $ip . ': ' . ($resultado['message'] ?? '')); 
         echo json_encode(['success' => false, 'message' => $resultado['message'] ?? 'Error al registrar usuario Google.']);
     }
 }
