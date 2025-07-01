@@ -1,48 +1,94 @@
 document.addEventListener('DOMContentLoaded', () => {
+    const esEstudianteUTP = document.getElementById('esEstudianteUTP');
+    const labelIdentidad = document.getElementById('labelIdentidad');
+    const inputIdentidadContainer = document.getElementById('inputIdentidadContainer');
+    const iconoIdentidad = document.getElementById('iconoIdentidad');
     const formularioLogin = document.getElementById('loginForm');
-    const inputCorreo = document.getElementById('email');
     const errorCorreo = document.getElementById('emailError');
-    const recordarUsuario = document.getElementById('rememberMe');
+    let inputIdentidad = document.getElementById('identidad');
 
-    // Cargar correo guardado si existe
-    const correoGuardado = localStorage.getItem('rememberedEmail');
-    if (correoGuardado) {
-        inputCorreo.value = correoGuardado;
-        recordarUsuario.checked = true;
+    function crearInput(tipo, nombre, placeholder, autocomplete) {
+        const input = document.createElement('input');
+        input.type = tipo;
+        input.id = 'identidad';
+        input.name = nombre;
+        input.placeholder = placeholder;
+        input.required = true;
+        input.autocomplete = autocomplete;
+        input.className = 'input-identidad';
+        return input;
     }
 
-    // Validar correo institucional
-    function validarCorreo() {
-        const correo = inputCorreo.value.trim();
-        const regexUTP = /^[a-zA-Z0-9._%+-]+@utp\.ac\.pa$/;
-        errorCorreo.textContent = '';
-        inputCorreo.style.borderColor = '#e2e8f0';
+    esEstudianteUTP.addEventListener('change', function () {
+        // Actualiza la referencia del input antes de eliminarlo
+        inputIdentidad = document.getElementById('identidad');
+        if (inputIdentidad) {
+            inputIdentidadContainer.removeChild(inputIdentidad);
+        }
+        if (this.checked) {
+            labelIdentidad.textContent = 'Correo Institucional';
+            iconoIdentidad.className = 'fas fa-envelope input-icon';
+            inputIdentidad = crearInput('email', 'email', 'Tu correo institucional', 'email');
+        } else {
+            labelIdentidad.textContent = 'Correo electrónico';
+            iconoIdentidad.className = 'fas fa-envelope input-icon';
+            inputIdentidad = crearInput('email', 'email', 'Tu correo electrónico', 'email');
+        }
+        inputIdentidadContainer.appendChild(inputIdentidad);
+        if (errorCorreo) errorCorreo.textContent = '';
+        inputIdentidad.style.borderColor = '#e2e8f0';
+        inputIdentidad.value = '';
+    });
 
-        if (!correo) {
-            errorCorreo.textContent = 'El correo es requerido';
-            inputCorreo.style.borderColor = '#ef4444';
+    function validarIdentidad() {
+        const valor = inputIdentidad.value.trim();
+        inputIdentidad.style.borderColor = '#e2e8f0';
+        if (errorCorreo) errorCorreo.textContent = '';
+
+        if (!valor) {
+            if (errorCorreo) errorCorreo.textContent = 'El correo es requerido';
+            inputIdentidad.style.borderColor = '#ef4444';
             return false;
         }
-        if (!regexUTP.test(correo)) {
-            errorCorreo.textContent = 'Debe usar un correo institucional válido (@utp.ac.pa)';
-            inputCorreo.style.borderColor = '#ef4444';
-            return false;
+        if (esEstudianteUTP.checked) {
+            const regexUTP = /^[a-zA-Z0-9._%+-]+@utp\.ac\.pa$/;
+            if (!regexUTP.test(valor)) {
+                if (errorCorreo) errorCorreo.textContent = 'Debe usar un correo institucional válido (@utp.ac.pa)';
+                inputIdentidad.style.borderColor = '#ef4444';
+                return false;
+            }
+        } else {
+            // Validar correo general
+            const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!regexEmail.test(valor)) {
+                if (errorCorreo) errorCorreo.textContent = 'Ingrese un correo válido';
+                inputIdentidad.style.borderColor = '#ef4444';
+                return false;
+            }
         }
         return true;
     }
 
-    inputCorreo.addEventListener('input', validarCorreo);
-    inputCorreo.addEventListener('blur', validarCorreo);
+    inputIdentidadContainer.addEventListener('input', function(e) {
+        if (e.target.id === 'identidad') validarIdentidad();
+    });
+    inputIdentidadContainer.addEventListener('blur', function(e) {
+        if (e.target.id === 'identidad') validarIdentidad();
+    }, true);
 
     formularioLogin.addEventListener('submit', function(e) {
-        if (!validarCorreo()) {
+        if (!validarIdentidad()) {
             e.preventDefault();
-        } else {
-            if (recordarUsuario.checked) {
-                localStorage.setItem('rememberedEmail', inputCorreo.value.trim());
-            } else {
-                localStorage.removeItem('rememberedEmail');
-            }
         }
     });
+
+    // Google button show/hide
+    const googleBtnBlock = document.getElementById('googleBtnBlock');
+    if (googleBtnBlock && esEstudianteUTP) {
+        googleBtnBlock.style.display = esEstudianteUTP.checked ? 'none' : 'block';
+        esEstudianteUTP.addEventListener('change', function () {
+            googleBtnBlock.style.display = this.checked ? 'none' : 'block';
+        });
+    }
 });
+

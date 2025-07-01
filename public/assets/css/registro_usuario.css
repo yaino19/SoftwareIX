@@ -1,0 +1,308 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+      :root {
+        --primary-purple: #9775aa;
+        --secondary-purple: #9d92c5;
+        --light-purple: #b8aed1;
+        --dark-purple: #6181bf;
+        --white: #ffffff;
+        --light-gray: #f8fafc;
+        --medium-gray: #64748b;
+        --dark-gray: #334155;
+        --shadow-light: 0 4px 6px -1px rgba(0, 0, 0, 0.06);
+        --shadow-medium: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+        --shadow-heavy: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+        --border-radius: 12px;
+        --border-radius-lg: 16px;
+        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      body {
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+          Roboto, sans-serif;
+        background: url("/public/assets/img/fondoLogin.png") no-repeat center
+          center fixed;
+        background-size: cover;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow-x: hidden;
+        backdrop-filter: blur(2px);
+      }
+
+      .registro-card-split {
+        display: flex;
+        max-width: 750px;
+        margin: 40px auto;
+        border-radius: var(--border-radius-lg);
+        overflow: hidden;
+        box-shadow: var(--shadow-heavy);
+        background: #fff;
+        min-height: 440px;
+      }
+
+      .registro-left {
+        background: linear-gradient(
+          120deg,
+          var(--secondary-purple) 0%,
+          var(--primary-purple) 100%
+        );
+        flex: 1.1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 36px 18px;
+        color: #fff;
+        text-align: center;
+      }
+
+      .registro-left .profile-icon-bg {
+        background: rgba(255, 255, 255, 0.12);
+        border-radius: 50%;
+        width: 90px;
+        height: 90px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 18px auto;
+        position: relative;
+      }
+
+      .registro-left .profile-icon-bg i {
+        font-size: 3em;
+        color: var(--white);
+        opacity: 0.85;
+      }
+
+      .registro-left .profile-plus {
+        position: absolute;
+        right: 12px;
+        bottom: 12px;
+        background: var(--primary-purple);
+        color: #fff;
+        border-radius: 50%;
+        width: 26px;
+        height: 26px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1em;
+        border: 2px solid #fff;
+      }
+
+      .registro-left h2 {
+        font-size: 1.4em;
+        font-weight: 700;
+        margin-bottom: 8px;
+        color: #fff;
+        letter-spacing: 0.01em;
+      }
+
+      .registro-left p {
+        font-size: 1em;
+        color: #e0e7ef;
+        margin-bottom: 0;
+      }
+
+      .registro-right {
+        flex: 2;
+        padding: 36px 32px;
+        background: #fff;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      .registro-form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+
+      .form-group {
+        margin-bottom: 12px;
+      }
+
+      .login-form label {
+        font-weight: 600;
+        color: var(--dark-gray);
+        font-size: 1.05em;
+        margin-bottom: 4px;
+        letter-spacing: 0.01em;
+        display: block;
+      }
+
+      .input-container {
+        display: flex;
+        align-items: center;
+        background: var(--light-gray);
+        border: 1.5px solid #e2e8f0;
+        border-radius: var(--border-radius);
+        padding: 0 12px;
+        transition: border-color 0.2s;
+        min-height: 42px;
+        gap: 8px;
+      }
+
+      .input-container:focus-within {
+        border-color: var(--secondary-purple);
+        background: #f3f0fa;
+      }
+
+      .input-container input {
+        border: none;
+        outline: none;
+        background: transparent;
+        font-size: 1em;
+        color: var(--dark-gray);
+        padding: 10px 0;
+        width: 100%;
+        font-family: "Inter", sans-serif;
+        font-weight: 500;
+      }
+
+      .input-container input::placeholder {
+        color: var(--medium-gray);
+        opacity: 1;
+        font-weight: 400;
+      }
+
+      .input-icon {
+        color: var(--medium-gray);
+        font-size: 1.1em;
+        margin-right: 4px;
+      }
+
+      .toggle-password {
+        cursor: pointer;
+        color: var(--medium-gray);
+        font-size: 1.15em;
+        margin-left: 8px;
+        transition: color 0.2s;
+      }
+      .toggle-password:hover {
+        color: var(--primary-purple);
+      }
+
+      .input-container .fa-google {
+        color: #ea4335;
+        font-size: 1.2em;
+        margin-left: 6px;
+        cursor: pointer;
+        transition: color 0.2s;
+      }
+      .input-container .fa-google:hover {
+        color: #b91c1c;
+      }
+
+      .login-button {
+        background: linear-gradient(
+          90deg,
+          var(--primary-purple) 0%,
+          var(--secondary-purple) 100%
+        );
+        color: #fff;
+        font-weight: 600;
+        border: none;
+        border-radius: var(--border-radius);
+        padding: 12px 0;
+        font-size: 1.1em;
+        margin-top: 10px;
+        width: 100%;
+        box-shadow: 0 2px 8px var(--primary-purple) 1a;
+        transition: background 0.2s, box-shadow 0.2s;
+      }
+      .login-button:hover {
+        background: linear-gradient(
+          90deg,
+          var(--secondary-purple) 0%,
+          var(--primary-purple) 100%
+        );
+        box-shadow: 0 4px 16px var(--primary-purple) 2a;
+      }
+
+
+      .login-footer {
+        text-align: center;
+        margin-top: 18px;
+        color: var(--medium-gray);
+      }
+
+      .login-footer a {
+        color: var(--primary-purple);
+        font-weight: 600;
+        text-decoration: none;
+      }
+
+      .modal {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  left: 0; top: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(0,0,0,0.4);
+  justify-content: center;
+  align-items: center;
+}
+.modal-content {
+  background: #fff;
+  padding: 40px 36px 32px 36px;
+  border-radius: 16px;
+  text-align: center;
+  position: relative;
+  min-width: 320px;
+  max-width: 95vw;
+  box-shadow: 0 8px 32px rgba(0,128,0,0.10);
+  border: 2px solid #22c55e;
+}
+.close-modal {
+  position: absolute;
+  right: 18px;
+  top: 10px;
+  font-size: 1.7em;
+  cursor: pointer;
+  color: #22c55e;
+}
+.modal-success-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 18px;
+}
+.modal-success-icon i {
+  font-size: 3.5em;
+  color: #22c55e;
+  background: #e7fbe9;
+  border-radius: 50%;
+  padding: 18px;
+}
+
+      @media (max-width: 900px) {
+        .registro-card-split {
+          flex-direction: column;
+          min-height: unset;
+        }
+        .registro-left,
+        .registro-right {
+          padding: 28px 10vw;
+        }
+      }
+      @media (max-width: 600px) {
+        .registro-card-split {
+          max-width: 98vw;
+        }
+        .registro-left,
+        .registro-right {
+          padding: 18px 4vw;
+        }
+        .registro-form-grid {
+          grid-template-columns: 1fr;
+          gap: 0;
+        }
+      }

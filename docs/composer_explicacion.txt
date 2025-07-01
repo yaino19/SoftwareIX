@@ -1,0 +1,15 @@
+Pasos para usar Composer en este proyecto
+
+1. Instalar Composer:
+   - Ve a https://getcomposer.org/download/.
+
+2. Traer los cambios de la rama principal para tener las carpetas nesesarias
+
+3. Abrir una terminal en la carpeta raíz del proyecto.
+
+4. Ejecutar el siguiente comando para asegurar que todas las dependencias estén instaladas correctamente:
+   composer install
+
+5. Listo. Ya puedes trabajar con el proyecto y usar todas las dependencias de PHP.
+
+Esto seria para probar el proyecto , ya sea el mecanismo de notificaicones con PHPMailer y otros.
