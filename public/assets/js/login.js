@@ -20,23 +20,25 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     esEstudianteUTP.addEventListener('change', function () {
-    inputIdentidadContainer.removeChild(inputIdentidad);
-
-    if (this.checked) {
-        labelIdentidad.textContent = 'Correo Institucional';
-        iconoIdentidad.className = 'fas fa-envelope input-icon';
-        inputIdentidad = crearInput('email', 'email', 'usuario@utp.ac.pa', 'email');
-    } else {
-        labelIdentidad.textContent = 'Correo electrónico';
-        iconoIdentidad.className = 'fas fa-envelope input-icon';
-        inputIdentidad = crearInput('email', 'email', 'Tu correo electrónico', 'email');
-    }
-    inputIdentidadContainer.appendChild(inputIdentidad);
-
-    if (errorCorreo) errorCorreo.textContent = '';
-    inputIdentidad.style.borderColor = '#e2e8f0';
-    inputIdentidad.value = '';
-});
+        // Actualiza la referencia del input antes de eliminarlo
+        inputIdentidad = document.getElementById('identidad');
+        if (inputIdentidad) {
+            inputIdentidadContainer.removeChild(inputIdentidad);
+        }
+        if (this.checked) {
+            labelIdentidad.textContent = 'Correo Institucional';
+            iconoIdentidad.className = 'fas fa-envelope input-icon';
+            inputIdentidad = crearInput('email', 'email', 'Tu correo institucional', 'email');
+        } else {
+            labelIdentidad.textContent = 'Correo electrónico';
+            iconoIdentidad.className = 'fas fa-envelope input-icon';
+            inputIdentidad = crearInput('email', 'email', 'Tu correo electrónico', 'email');
+        }
+        inputIdentidadContainer.appendChild(inputIdentidad);
+        if (errorCorreo) errorCorreo.textContent = '';
+        inputIdentidad.style.borderColor = '#e2e8f0';
+        inputIdentidad.value = '';
+    });
 
     function validarIdentidad() {
         const valor = inputIdentidad.value.trim();
@@ -90,16 +92,3 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// Mostrar/ocultar contraseña
-document.addEventListener('DOMContentLoaded', () => {
-    const passwordInput = document.getElementById('password');
-    const togglePassword = document.getElementById('togglePassword');
-    if (togglePassword && passwordInput) {
-        togglePassword.addEventListener('click', function () {
-            const isVisible = passwordInput.type === 'text';
-            passwordInput.type = isVisible ? 'password' : 'text';
-            this.classList.toggle('fa-eye');
-            this.classList.toggle('fa-eye-slash');
-        });
-    }
-});
