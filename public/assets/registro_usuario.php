@@ -183,6 +183,7 @@
                 placeholder="•••••"
                 required
                 autocomplete="new-password"
+                minlength="7"
               />
               <i
                 class="fas fa-eye-slash toggle-password"
@@ -247,5 +248,30 @@
       </script>
     <?php endif; ?>
     <script src="./js/registro_usuario.js"></script>
+    <script>
+    document.getElementById('registerForm').addEventListener('submit', function(e) {
+      var password = document.getElementById('password').value;
+      var regexMayuscula = /[A-Z]/;
+      var regexSimbolo = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/;
+      if (password.length < 7) {
+        e.preventDefault();
+        alert('La contraseña debe tener al menos 7 caracteres.');
+        document.getElementById('password').focus();
+        return false;
+      }
+      if (!regexMayuscula.test(password)) {
+        e.preventDefault();
+        alert('La contraseña debe contener al menos una letra mayúscula.');
+        document.getElementById('password').focus();
+        return false;
+      }
+      if (!regexSimbolo.test(password)) {
+        e.preventDefault();
+        alert('La contraseña debe contener al menos un símbolo (por ejemplo: !, @, #, etc).');
+        document.getElementById('password').focus();
+        return false;
+      }
+    });
+</script>
   </body>
 </html>

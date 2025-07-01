@@ -250,6 +250,20 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (estado === 'nuevaContrasena') {
             const nueva = document.getElementById('nuevaContrasena').value;
             const confirmar = document.getElementById('confirmarContrasena').value;
+            var regexMayuscula = /[A-Z]/;
+            var regexSimbolo = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/;
+            if (nueva.length < 7) {
+                mostrarMensajeModal('La contraseña debe tener al menos 7 caracteres.');
+                return;
+            }
+            if (!regexMayuscula.test(nueva)) {
+                mostrarMensajeModal('La contraseña debe contener al menos una letra mayúscula.');
+                return;
+            }
+            if (!regexSimbolo.test(nueva)) {
+                mostrarMensajeModal('La contraseña debe contener al menos un símbolo (por ejemplo: !, @, #, etc).');
+                return;
+            }
             if (nueva !== confirmar) {
                 mostrarMensajeModal('Las contraseñas no coinciden');
                 return;
