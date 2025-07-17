@@ -781,7 +781,7 @@ if (isset($_SESSION['usuario_id'])) {
           </section>
         </section>
         <section id="productos" class="spa-section">
-          <?php include './public/assets/productos.php'; ?>
+          <?php include './public/assets/productos_nuevo.php'; ?>
         </section>
         <section id="contacto" class="spa-section">
         <?php
