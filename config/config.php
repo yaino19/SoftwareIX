@@ -1,8 +1,8 @@
 <?php
-define("urlsite", "http://localhost/SoftwareIX/");
+define("urlsite", "http://localhost:3000/SoftwareIX/");
 
-$host = "localhost";
-$username = "jasonpty";
-$password = "jason27278";
+$host = "127.0.0.1";
+$username = "freddy";
+$password = "12345root";
 $database = "db_zonautp";
 ?>

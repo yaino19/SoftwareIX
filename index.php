@@ -5,6 +5,10 @@ require_once(__DIR__ . '/config/config.php');
 
 $filtro_nombre = null;
 if (isset($_SESSION['usuario_id'])) {
+    $host = "localhost";
+    $username = "jasonpty";
+    $password = "jason27278";
+    $database = "db_zonautp";
     $conn = new mysqli($host, $username, $password, $database);
     if (!$conn->connect_error) {
         $stmt = $conn->prepare("SELECT nombre FROM Usuarios WHERE id = ?");
@@ -550,7 +554,7 @@ if (isset($_SESSION['usuario_id'])) {
               <a class="nav-link" href="#inicio" onclick="showSection('inicio'); return false;">Inicio</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#productos" onclick="showSection('productos'); return false;">Productos</a>
+              <a class="nav-link" href="productos.html">Productos</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#contacto" onclick="showSection('contacto'); return false;">Contacto</a>

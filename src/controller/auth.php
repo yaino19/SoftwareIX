@@ -6,7 +6,6 @@ require_once(__DIR__ . '/../../config/config.php');
 
 $MAX_ATTEMPTS = 3;
 $BLOCK_DURATION = 700; // Duración del bloqueo en segundos
-
 $conn = new mysqli($host, $username, $password, $database);
 if ($conn->connect_error) {
     die("Conexión fallida: " . $conn->connect_error);
