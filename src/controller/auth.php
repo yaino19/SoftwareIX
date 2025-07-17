@@ -6,10 +6,11 @@ require_once(__DIR__ . '/../services/LoggerService.php');
 $MAX_ATTEMPTS = 3;
 $BLOCK_DURATION = 700; // Duración del bloqueo en segundos
 
-$host = "localhost";
-$username = "jasonpty";
-$password = "jason27278";
+$host = "127.0.0.1";
+$username = "freddy";
+$password = "12345root";
 $database = "db_zonautp";
+
 
 $conn = new mysqli($host, $username, $password, $database);
 
