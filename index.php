@@ -5,10 +5,6 @@ require_once(__DIR__ . '/config/config.php');
 
 $filtro_nombre = null;
 if (isset($_SESSION['usuario_id'])) {
-    $host = "localhost";
-    $username = "jasonpty";
-    $password = "jason27278";
-    $database = "db_zonautp";
     $conn = new mysqli($host, $username, $password, $database);
     if (!$conn->connect_error) {
         $stmt = $conn->prepare("SELECT nombre FROM Usuarios WHERE id = ?");
@@ -54,7 +50,9 @@ if (isset($_SESSION['usuario_id'])) {
       }
       .spa-section { display: none; }
       .spa-section.active { display: block; }
-      main { min-height: 60vh; }
+      main { min-height: 60vh; position: relative; z-index: 1; }
+      .footer { width: 100%; background: #f8f9fa; color: #222; text-align: center; padding: 32px 0 18px 0; margin-top: 32px; position: relative; z-index: 2; }
+      .footer-text { margin: 0 0 8px 0; font-size: 1em; }
       .modal-center {
         position: fixed;
         z-index: 9999;
@@ -554,7 +552,7 @@ if (isset($_SESSION['usuario_id'])) {
               <a class="nav-link" href="#inicio" onclick="showSection('inicio'); return false;">Inicio</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="productos.html">Productos</a>
+              <a class="nav-link" href="#productos" onclick="showSection('productos'); return false;">Productos</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#contacto" onclick="showSection('contacto'); return false;">Contacto</a>
@@ -766,19 +764,22 @@ if (isset($_SESSION['usuario_id'])) {
               <h3 class="section-title">Explora por Categorías</h3>
               <div class="categorias-grid">
                 <div class="categoria-item">
-                  <a href="#productos" onclick="showSection('productos')"></a>
-                  <h5 class="categoria-title">Ropa</h5>
-                  <p class="categoria-description">Encuentra camisetas, sudaderas, y más.</p>
+                  <a href="#productos" onclick="showSection('productos'); return false;" class="categoria-link">
+                    <h5 class="categoria-title">Ropa</h5>
+                    <p class="categoria-description">Encuentra camisetas, sudaderas, y más.</p>
+                  </a>
                 </div>
                 <div class="categoria-item">
-                  <a href="#productos" onclick="showSection('productos')"></a>
-                  <h5 class="categoria-title">Accesorios</h5>
-                  <p class="categoria-description">Gorras, termos, mochilas y más.</p>
+                  <a href="#productos" onclick="showSection('productos'); return false;" class="categoria-link">
+                    <h5 class="categoria-title">Accesorios</h5>
+                    <p class="categoria-description">Gorras, termos, mochilas y más.</p>
+                  </a>
                 </div>
                 <div class="categoria-item">
-                  <a href="#productos" onclick="showSection('productos')"></a>
-                  <h5 class="categoria-title">Oficina</h5>
-                  <p class="categoria-description">Material de oficina con el logo UTP.</p>
+                  <a href="#productos" onclick="showSection('productos'); return false;" class="categoria-link">
+                    <h5 class="categoria-title">Oficina</h5>
+                    <p class="categoria-description">Material de oficina con el logo UTP.</p>
+                  </a>
                 </div>
               </div>
             </div>
@@ -795,7 +796,7 @@ if (isset($_SESSION['usuario_id'])) {
             include './public/assets/contacto.php';
           }
         ?>
-      </section>
+        </section>
         <section id="carrito" class="spa-section">
           <?php include './public/assets/carrito.php'; ?>
         </section>
@@ -860,11 +861,20 @@ if (isset($_SESSION['usuario_id'])) {
 
       // SPA: Cambia de sección sin recargar
       function showSection(sectionId) {
+        var found = false;
         document.querySelectorAll('.spa-section').forEach(function(sec) {
-          sec.classList.remove('active');
+          if (sec.id === sectionId) {
+            sec.classList.add('active');
+            found = true;
+          } else {
+            sec.classList.remove('active');
+          }
         });
-        var section = document.getElementById(sectionId);
-        if (section) section.classList.add('active');
+        // Si no se encontró la sección, muestra inicio por defecto
+        if (!found) {
+          var inicio = document.getElementById('inicio');
+          if (inicio) inicio.classList.add('active');
+        }
 
         // Si es carrito, fuerza la pestaña principal y actualiza
         if (sectionId === 'carrito') {

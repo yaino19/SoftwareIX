@@ -6,9 +6,9 @@ if (isset($_SESSION['usuario_id'])) {
 }
 require_once(__DIR__ . '/../../src/model/Usuario.php');
 
-$host = "127.0.0.1";
-$username = "freddy";
-$password = "12345root";
+$host = "localhost";
+$username = "jasonpty";
+$password = "jason27278";
 $database = "db_zonautp";
 
 $conn = new mysqli($host, $username, $password, $database);

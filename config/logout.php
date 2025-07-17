@@ -21,4 +21,3 @@ session_destroy();
 // Redirige al login de tu proyecto usando redirect POST-REDIRECT-GET
 header("Location: " . urlsite . "public/assets/login.php?logout=1");
 exit();
-// NOTA: El mensaje de logout se muestra solo una vez porque el parámetro ?logout=1 solo está en la URL tras el redirect. Si recargas, desaparece.
