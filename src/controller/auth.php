@@ -2,18 +2,11 @@
 session_start();
 require_once(__DIR__ . '/../model/Usuario.php');
 require_once(__DIR__ . '/../services/LoggerService.php');
+require_once(__DIR__ . '/../../config/config.php');
 
 $MAX_ATTEMPTS = 3;
 $BLOCK_DURATION = 700; // Duración del bloqueo en segundos
-
-$host = "127.0.0.1";
-$username = "freddy";
-$password = "12345root";
-$database = "db_zonautp";
-
-
 $conn = new mysqli($host, $username, $password, $database);
-
 if ($conn->connect_error) {
     die("Conexión fallida: " . $conn->connect_error);
 }
