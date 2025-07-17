@@ -79,7 +79,6 @@
     color: rgb(0, 0, 0);
     padding: 1px 0;
 }
-
 .header-container {
     display: flex;
     align-items: center;
@@ -4485,127 +4484,6 @@ textarea.form-control-lg {
 .card-img-bottom {
   width: 100%;
 }
-.card.h-100 {
-    border: none;
-    border-radius: 22px;
-    box-shadow: 0 6px 24px #7c3aed22, 0 1.5px 4px #7c3aed11;
-    background: linear-gradient(135deg, #f3e8ff 60%, #fff 100%);
-    transition: transform 0.18s, box-shadow 0.18s, background 0.18s;
-    position: relative;
-    overflow: hidden;
-    min-height: unset;
-    height: 260px; /* Ajusta este valor según lo que necesites */
-    max-height: 280px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-.card.h-100:hover {
-    transform: translateY(-8px) scale(1.04) rotate(-1deg);
-    box-shadow: 0 12px 32px #7c3aed33, 0 2px 8px #7c3aed22;
-    background: linear-gradient(135deg, #ede9fe 60%, #fff 100%);
-}
-
-.card-img-top {
-    height: 120px;
-    object-fit: contain;
-    background: linear-gradient(120deg, #ede9fe 60%, #fff 100%);
-    border-radius: 22px 22px 0 0;
-    padding: 0.7rem 0.7rem 0.2rem 0.7rem;
-    transition: filter 0.2s;
-}
-.card.h-100:hover .card-img-top {
-    filter: drop-shadow(0 0 12px #7c3aed44);
-}
-
-.card-body.p-4 {
-    padding: 0.7rem 1rem 0.5rem 1rem !important;
-    background: transparent;
-}
-
-.card-footer.p-4 {
-    padding: 0.7rem 1rem 1rem 1rem !important;
-    background: transparent;
-    border-top: none;
-}
-
-.fw-bolder {
-    color: #5b21b6;
-    font-size: 1.1rem;
-    letter-spacing: 0.5px;
-}
-
-.card .product-price {
-    font-size: 1.05rem;
-    color: #3c0f8a;
-    font-weight: 600;
-    margin-bottom: 0.2rem;
-}
-
-.card .product-category {
-    font-size: 0.85rem;
-    color: #a78bfa;
-    font-weight: 500;
-    margin-bottom: 0.3rem;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-}
-
-.card .badge.bg-dark {
-    background: linear-gradient(90deg, #7c3aed 60%, #818cf8 100%) !important;
-    font-size: 0.85em;
-    font-weight: 600;
-    letter-spacing: 1px;
-    box-shadow: 0 2px 8px #7c3aed33;
-}
-
-.btn-outline-dark {
-    border-radius: 20px;
-    border-width: 2px;
-    font-weight: 600;
-    transition: background 0.2s, color 0.2s, box-shadow 0.2s;
-    box-shadow: 0 2px 8px #7c3aed11;
-}
-.btn-outline-dark:hover {
-    background: linear-gradient(90deg, #7c3aed 60%, #818cf8 100%);
-    color: #fff;
-    border-color: #7c3aed;
-    box-shadow: 0 4px 16px #7c3aed22;
-}
-
-.card .bi-star-fill {
-    color: #fbbf24;
-    margin: 0 1px;
-    font-size: 1rem;
-    filter: drop-shadow(0 0 2px #fff);
-}
-
-@media (max-width: 768px) {
-    .card-img-top {
-        height: 80px;
-    }
-    .card.h-100 {
-        border-radius: 16px;
-    }
-}.card-img-top {
-    height: 120px; /* o el valor que prefieras, por ejemplo 100px */
-    object-fit: contain;
-}
-
-.card.h-100 {
-    min-height: unset;
-    height: 260px; /* Ajusta este valor según lo que necesites */
-    max-height: 280px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-.card-body.p-4 {
-    padding: 0.5rem !important;
-}
-.card-footer.p-4 {
-    padding: 0.5rem !important;
-}
 .card-img,
 .card-img-top {
   border-top-left-radius: var(--bs-card-inner-border-radius);
@@ -5109,7 +4987,6 @@ textarea.form-control-lg {
     animation: none;
   }
 }
-
 .list-group {
   --bs-list-group-color: #212529;
   --bs-list-group-bg: #fff;

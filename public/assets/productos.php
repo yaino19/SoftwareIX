@@ -4,6 +4,27 @@ if (!isset($_SESSION['usuario_id'])) {
     header("Location: login.php");
     exit();
 }
+
+
+// Conexión a la base de datos
+$host = "127.0.0.1";
+$username = "freddy";
+$password = "12345root";
+$database = "db_zonautp";
+$conn = new mysqli($host, $username, $password, $database);
+if ($conn->connect_error) {
+    die("Conexión fallida: " . $conn->connect_error);
+}
+
+// Filtro por categoría (opcional)
+$filtro_categoria = isset($_GET['categoria']) ? intval($_GET['categoria']) : null;
+
+$sql = "SELECT * FROM productos";
+if ($filtro_categoria) {
+    $sql .= " WHERE categoria_id = $filtro_categoria";
+}
+$result = $conn->query($sql);
+
 ?>
 
 <!DOCTYPE html>
@@ -20,7 +41,7 @@ if (!isset($_SESSION['usuario_id'])) {
         <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="../assets/css/style-clothes.css" rel="stylesheet" />
-        <link href="../assets/css/style.css" rel="stylesheet" /> <!-- Agrega esto después -->
+        <link href="../assets/css/style.css" rel="stylesheet" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"/>
     </head>
     <body>
@@ -76,19 +97,7 @@ if (!isset($_SESSION['usuario_id'])) {
         </div>
       </div>
     </header>
-
-    <section class="banner">
-        <div class="container banner-container">
-          <h2 class="banner-title">¡Hey, bienvenido a Zona-UTP!</h2>
-          <p class="banner-text">
-            Más que solo merch, aquí encuentras estilo universitario con
-            actitud. ¿Listo para llevar tu orgullo UTP al siguiente nivel? 🚀
-          </p>
-        </div>
-      </section>
-
-
-<br>
+    
     <!-- Botón de filtro -->
     <div class="container my-2">
   <div class="d-flex align-items-center gap-3 filtro-bar" style="background: #f3e8ff; border-radius: 18px; padding: 0.7rem 1.2rem;">
@@ -588,9 +597,29 @@ if (!isset($_SESSION['usuario_id'])) {
           </div>
         </div>
       </div>
+<h1>Extraidos desde la Base --></h1>
+<?php 
+while($row = $result->fetch_assoc()): ?>
+  <div class="col mb-5">
+    <div class="card h-100">
+      <img class="card-img-top" src="<?php echo htmlspecialchars($row['imagen_url']); ?>" alt="<?php echo htmlspecialchars($row['nombre']); ?>" />
+      <div class="card-body p-4">
+        <div class="text-center">
+          <h5 class="fw-bolder"><?php echo htmlspecialchars($row['nombre']); ?></h5>
+          $<?php echo number_format($row['precio'], 2); ?>
+        </div>
+      </div>
+      <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+        <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">Agregar al carrito</a></div>
+      </div>
+    </div>
+  </div>
+<?php endwhile; ?>
 
                 </div>
             </div>
+
+            
         </section>
         <!-- Footer-->
         <footer class="py-5 bg-dark">
