@@ -2,6 +2,10 @@
 session_start();
 
 require_once(__DIR__ . '/../config/config.php');
+$conn = new mysqli($host, $username, $password, $database);
+if ($conn->connect_error) {
+    die("Conexión fallida: " . $conn->connect_error);
+}
 
 // Registrar el fin de sesión en la base de datos
 if (isset($_SESSION['gestion_sesion_id'])) {

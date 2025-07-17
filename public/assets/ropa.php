@@ -1,23 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <meta name="description" content="" />
-        <meta name="author" content="" />
-        <title>ZonaUTP</title>
-        <!-- Favicon-->
-        <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
-        <!-- Bootstrap icons-->
+        <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ZonaUTP - Pagina Principal</title>
+    <link rel="stylesheet" href="./public/assets/css/style.css" />
+    <script src="./public/assets/js/main.js" defer></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link rel="icon" href="./public/assets/img/LogoPrincipal.png" type="image/png" />
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="../css/style-clothes.css" rel="stylesheet" />
+        <link rel="stylesheet" href="../css/style.css">
     </head>
     <body>
-       <header class="header">
+        <!-- Navigation-->
+        <header class="header">
       <div class="container header-container">
         <div class="logo-container">
-          <img src="../img/LogoPrincipal.png" alt="Logo" class="logo" />
+          <img src="../img/LogoPrincipal.png" alt="Logo" class="logo"/>
           <h1 class="site-title">zona-UTP</h1>
         </div>
 
@@ -37,10 +42,10 @@
         <nav class="nav" id="nav">
           <ul class="nav-list">
             <li class="nav-item">
-              <a class="nav-link" href="index.html">Inicio</a>
+              <a class="nav-link" href="../../../index.php">Inicio</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="productos.html">Productos</a>
+              <a class="nav-link" href="./public/assets/html/ropa.html">Productos</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="contacto.html">Contacto</a>
@@ -50,15 +55,21 @@
         <div class="user-menu">
           <i class="fas fa-user-circle" id="user-icon"></i>
           <div class="user-options" id="user-options">
-            <a href="perfil.html" class="user-option">
-              <i class="fas fa-user"></i> Perfil
-            </a>
-            <a href="carrito.html" class="user-option">
-              <i class="fas fa-shopping-cart"></i> Carrito
-            </a>
-            <a href="logout.html" class="user-option-logout">
-              <i class="fas fa-sign-out-alt"></i> Cerrar sesión
-            </a>
+            <?php if (isset($_SESSION['usuario_id'])): ?>
+              <a href="./public/assets/html/perfil.html" class="user-option">
+                <i class="fas fa-user"></i> Perfil
+              </a>
+              <a href="carrito.html" class="user-option">
+                <i class="fas fa-shopping-cart"></i> Carrito
+              </a>
+              <a href="#" class="user-option-logout" id="logout-link">
+                <i class="fas fa-sign-out-alt"></i> Cerrar sesión
+              </a>
+            <?php else: ?>
+              <a href="./public/assets/login.php" class="user-option">
+                <i class="fas fa-user"></i> Iniciar sesión
+              </a>
+            <?php endif; ?>
           </div>
         </div>
       </div>
