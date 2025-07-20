@@ -26,6 +26,7 @@ if (isset($_SESSION['usuario_id'])) {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ZonaUTP - Pagina Principal</title>
+    <link rel="stylesheet" href="./public/assets/css/style-clothes.css" />
     <link rel="stylesheet" href="./public/assets/css/style.css" />
     <script src="./public/assets/js/main.js" defer></script>
     <link
@@ -764,19 +765,19 @@ if (isset($_SESSION['usuario_id'])) {
               <h3 class="section-title">Explora por Categorías</h3>
               <div class="categorias-grid">
                 <div class="categoria-item">
-                  <a href="#productos" onclick="showSection('productos'); return false;" class="categoria-link">
+                  <a href="#productos" onclick="filtrarCategoria('2'); return false;" class="categoria-link" data-categoria="2">
                     <h5 class="categoria-title">Ropa</h5>
                     <p class="categoria-description">Encuentra camisetas, sudaderas, y más.</p>
                   </a>
                 </div>
                 <div class="categoria-item">
-                  <a href="#productos" onclick="showSection('productos'); return false;" class="categoria-link">
+                  <a href="#productos" onclick="filtrarCategoria('1'); return false;" class="categoria-link" data-categoria="1">
                     <h5 class="categoria-title">Accesorios</h5>
                     <p class="categoria-description">Gorras, termos, mochilas y más.</p>
                   </a>
                 </div>
                 <div class="categoria-item">
-                  <a href="#productos" onclick="showSection('productos'); return false;" class="categoria-link">
+                  <a href="#productos" onclick="filtrarCategoria('3'); return false;" class="categoria-link" data-categoria="3">
                     <h5 class="categoria-title">Oficina</h5>
                     <p class="categoria-description">Material de oficina con el logo UTP.</p>
                   </a>
@@ -957,6 +958,19 @@ if (isset($_SESSION['usuario_id'])) {
           });
         }
       });
+      function filtrarCategoria(categoriaId) {
+  showSection('productos');
+  // Espera a que la sección esté visible y el select exista
+  setTimeout(function() {
+    var select = document.getElementById('categoria');
+    if (select) {
+      select.value = categoriaId;
+      // Dispara el evento change para activar el filtro AJAX
+      var event = new Event('change', { bubbles: true });
+      select.dispatchEvent(event);
+    }
+  }, 100);
+}
     </script>
   </body>
 </html>
