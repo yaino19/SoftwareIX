@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil de Usuario</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: rgb(213, 211, 213);
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 100vw;
+            width: 100%;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: auto auto;
+            gap: 20px;
+            height: calc(100vh - 40px);
+            box-sizing: border-box;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            width: 100%;
+            max-width: none;
+        }
+
+        /* Eliminar el efecto de zoom al hacer hover en .card */
+        .card:hover {
+            /* transform: translateY(-5px); */
+            /* transform eliminado para quitar el zoom */
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15);
+        }
+
+        .profile-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+        }
+
+        .profile-image-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .profile-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .profile-image:hover {
+            transform: scale(1.05);
+        }
+
+        .profile-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .edit-overlay {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: #667eea;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 3px solid white;
+        }
+
+        .edit-overlay:hover {
+            background: #5a6fd8;
+            transform: scale(1.1);
+        }
+
+        .edit-overlay svg {
+            width: 16px;
+            height: 16px;
+            fill: white;
+        }
+
+        .user-name {
+            font-size: 28px;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 8px;
+        }
+
+        .user-status {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+
+        .user-email {
+            color: #718096;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        .edit-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .edit-btn:hover {
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .notifications-card {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .notifications-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .notifications-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2d3748;
+        }
+
+        .notification-count {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .notification-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+
+        .notification-item:hover {
+            background: rgba(102, 126, 234, 0.05);
+            margin: 0 -15px;
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .notification-item:last-child {
+            border-bottom: none;
+        }
+
+        .notification-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #667eea;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .notification-text {
+            color: #4a5568;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+
+        .purchase-summary {
+            grid-column: 1 / -1;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .summary-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .view-history {
+            color: #667eea;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .view-history:hover {
+            color: #5a6fd8;
+            text-decoration: underline;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            flex: 1;
+        }
+
+        .summary-item {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            background: rgba(102, 126, 234, 0.05);
+            border-radius: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .summary-item:hover {
+            background: rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .summary-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 24px;
+        }
+
+        .summary-content {
+            flex: 1;
+        }
+
+        .summary-label {
+            font-size: 14px;
+            color: #718096;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .summary-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: #2d3748;
+        }
+
+        .summary-value.price {
+            color: #667eea;
+            font-size: 24px;
+        }
+
+        .purchases-icon {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+        }
+
+        .pending-icon {
+            background: linear-gradient(135deg, #FF9800, #F57F17);
+            color: white;
+        }
+
+        .total-icon {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        #imageInput {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                max-width: none;
+                width: 100vw;
+                grid-template-columns: 1fr;
+                grid-template-rows: auto auto auto;
+                gap: 15px;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .profile-image {
+                width: 100px;
+                height: 100px;
+                font-size: 40px;
+            }
+
+            .user-name {
+                font-size: 24px;
+            }
+
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Tarjeta de Perfil -->
+        <div class="card profile-card">
+            <div class="profile-image-container">
+                <div class="profile-image" id="profileImage" onclick="document.getElementById('imageInput').click()">
+                    JP
+                </div>
+                <div class="edit-overlay" onclick="document.getElementById('imageInput').click()">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                    </svg>
+                </div>
+                <input type="file" id="imageInput" accept="image/*" onchange="handleImageUpload(event)">
+            </div>
+            
+            <h2 class="user-name">Juan Pérez</h2>
+            <span class="user-status">Cliente Prime</span>
+            <p class="user-email">juan.perez@email.com</p>
+            <button class="edit-btn" onclick="editProfile()">Editar Perfil</button>
+        </div>
+
+        <!-- Tarjeta de Notificaciones -->
+        <div class="card notifications-card">
+            <div class="notifications-header">
+                <h3 class="notifications-title">Notificaciones</h3>
+                <div class="notification-count">2</div>
+            </div>
+            
+            <div class="notification-item">
+                <div class="notification-dot"></div>
+                <div class="notification-text">Tu pedido #1234 está en camino.</div>
+            </div>
+            
+            <div class="notification-item">
+                <div class="notification-dot"></div>
+                <div class="notification-text">¡Tienes un cupón de 10% de descuento!</div>
+            </div>
+        </div>
+
+        <!-- Resumen de Compras -->
+        <div class="card purchase-summary">
+            <div class="summary-title">
+                Resumen de compras
+                <a href="#" class="view-history">Ver historial</a>
+            </div>
+            
+            <div class="summary-grid">
+                <div class="summary-item">
+                    <div class="summary-icon purchases-icon">🛒</div>
+                    <div class="summary-content">
+                        <div class="summary-label">Compras realizadas:</div>
+                        <div class="summary-value">12</div>
+                    </div>
+                </div>
+                
+                <div class="summary-item">
+                    <div class="summary-icon pending-icon">📦</div>
+                    <div class="summary-content">
+                        <div class="summary-label">Pedidos en curso:</div>
+                        <div class="summary-value">3</div>
+                    </div>
+                </div>
+                
+                <div class="summary-item">
+                    <div class="summary-icon total-icon">💰</div>
+                    <div class="summary-content">
+                        <div class="summary-label">Total gastado:</div>
+                        <div class="summary-value price">$350.00</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const profileImage = document.getElementById('profileImage');
+                    profileImage.innerHTML = `<img src="${e.target.result}" alt="Foto de perfil">`;
+                    
+                    // Simular guardado
+                    setTimeout(() => {
+                        showNotification('Imagen de perfil actualizada correctamente', 'success');
+                    }, 500);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+    </script>
+</body>
+</html>

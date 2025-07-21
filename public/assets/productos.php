@@ -1,315 +1,95 @@
 <?php
-session_start();
-if (!isset($_SESSION['usuario_id'])) {
-    header("Location: login.php");
-    exit();
+if (session_status() !== PHP_SESSION_ACTIVE) session_start();
+require_once(__DIR__ . '/../../config/config.php');
+$conn = new mysqli($host, $username, $password, $database);
+if ($conn->connect_error) {
+    die("Conexión fallida: " . $conn->connect_error);
 }
-?>
+$categoria = isset($_GET['categoria']) && $_GET['categoria'] !== '' ? intval($_GET['categoria']) : null;
+$sql = "SELECT * FROM productos";
+if ($categoria) {
+    $sql .= " WHERE categoria_id = $categoria";
+}
+$result = $conn->query($sql);
 
-<!DOCTYPE html>
-<html lang="en">
-  <style>
-  </style>
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <meta name="description" content="" />
-        <meta name="author" content="" />
-        <title>ZonaUTP</title>
-        <!-- Favicon-->
-        <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
-        <!-- Core theme CSS (includes Bootstrap)-->
-        <link href="../assets/css/style-clothes.css" rel="stylesheet" />
-        <link href="../assets/css/style.css" rel="stylesheet" /> <!-- Agrega esto después -->
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"/>
-    </head>
-    <body>
-       <header class="header">
-      <div class="container header-container">
-        <div class="logo-container">
-          <img src="./img/LogoPrincipal.png" alt="Logo" class="logo"/>
-          <h1 class="site-title">zona-UTP</h1>
-        </div>
 
-        <div class="search-container">
-          <input
-            type="text"
-            class="search-input"
-            placeholder="Buscar productos..."
-          />
-          <button class="search-button">
-            <i class="fas fa-search"></i>
-          </button>
-        </div>
-        <button class="hamburger-menu" id="hamburger-menu">
-          <i class="fas fa-bars"></i>
-        </button>
-        <nav class="nav" id="nav">
-          <ul class="nav-list">
-            <li class="nav-item">
-              <a class="nav-link" href="../../index.php">Inicio</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="productos.html">Productos</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="contacto.html">Contacto</a>
-            </li>
-          </ul>
-        </nav>
-        <div class="user-menu">
-          <i class="fas fa-user-circle" id="user-icon"></i>
-          <div class="user-options" id="user-options">
-              <a href="perfil.html" class="user-option">
-                <i class="fas fa-user"></i> Perfil
-              </a>
-              <a href="carrito.html" class="user-option">
-                <i class="fas fa-shopping-cart"></i> Carrito
-              </a>
-              <a href="#" class="user-option-logout" id="logout-link">
-                <i class="fas fa-sign-out-alt"></i> Cerrar sesión
-              </a>
-              <a href="login.php" class="user-option">
-                <i class="fas fa-user"></i> Iniciar sesión
-              </a>
+// Si es AJAX, solo devuelve las cards
+if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
+    while($row = $result->fetch_assoc()): ?>
+      <div class="col mb-5">
+        <div class="card h-100">
+          <img class="card-img-top" src="./public/assets/<?php echo htmlspecialchars($row['imagen_url']); ?>" alt="<?php echo htmlspecialchars($row['nombre']); ?>" />
+          <div class="card-body p-4">
+            <div class="text-center">
+              <h5 class="fw-bolder"><?php echo htmlspecialchars($row['nombre']); ?></h5>
+              $<?php echo number_format($row['precio'], 2); ?>
+            </div>
+          </div>
+          <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+            <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">Agregar al carrito</a></div>
           </div>
         </div>
       </div>
-    </header>
-
-    <section class="banner">
-        <div class="container banner-container">
-          <h2 class="banner-title">¡Hey, bienvenido a Zona-UTP!</h2>
-          <p class="banner-text">
-            Más que solo merch, aquí encuentras estilo universitario con
-            actitud. ¿Listo para llevar tu orgullo UTP al siguiente nivel? 🚀
-          </p>
+    <?php endwhile;
+    exit;
+}
+?>
+<div class="productos-section" style="padding:32px 0 0 0; background:linear-gradient(135deg,#f8f9fa 0%,#e9ecef 100%); min-height:60vh;">
+  <div class="container">
+    <h3 class="section-title" style="margin-top:0;">Todos los Productos</h3>
+    <section class="py-5">
+      <div class="container px-4 px-lg-5 mt-4">
+        <div class="container my-2">
+          <div class="d-flex align-items-center gap-3 filtro-bar" style="background: #f3e8ff; border-radius: 18px; padding: 0.7rem 1.2rem;">
+            <span style="color: #7c3aed; font-weight: 600; letter-spacing: 1px;">
+              Filtra los productos por categoría:
+            </span>
+            <form method="get" class="mb-0" onsubmit="return false;">
+              <select name="categoria" id="categoria" class="btn btn-filtro" style="margin-left: 8px;">
+                <option value="">Todas</option>
+                <option value="1" <?php if(isset($_GET['categoria']) && $_GET['categoria']=='1') echo 'selected'; ?>>Accesorios</option>
+                <option value="2" <?php if(isset($_GET['categoria']) && $_GET['categoria']=='2') echo 'selected'; ?>>Ropa</option>
+                <option value="3" <?php if(isset($_GET['categoria']) && $_GET['categoria']=='3') echo 'selected'; ?>>Oficina</option>
+              </select>
+            </form>
+          </div>
         </div>
-      </section>
-
-
-<br>
-    <!-- Botón de filtro -->
-    <div class="container my-2">
-  <div class="d-flex align-items-center gap-3 filtro-bar" style="background: #f3e8ff; border-radius: 18px; padding: 0.7rem 1.2rem;">
-    <span style="color: #7c3aed; font-weight: 600; letter-spacing: 1px;">
-      Filtra los productos por categoría, precio o tipo:
-    </span>
-    <button class="btn btn-filtro" id="filtro-btn">
-      <i class="fas fa-filter"></i> Filtro
-    </button>
+        <div id="productos-list" class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+          <?php while($row = $result->fetch_assoc()): ?>
+            <div class="col mb-5">
+              <div class="card h-100">
+                <img class="card-img-top" src="./public/assets/<?php echo htmlspecialchars($row['imagen_url']); ?>" alt="<?php echo htmlspecialchars($row['nombre']); ?>" />
+                <div class="card-body p-4">
+                  <div class="text-center">
+                    <h5 class="fw-bolder"><?php echo htmlspecialchars($row['nombre']); ?></h5>
+                    $<?php echo number_format($row['precio'], 2); ?>
+                  </div>
+                </div>
+                <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                  <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">Agregar al carrito</a></div>
+                </div>
+              </div>
+            </div>
+          <?php endwhile; ?>
+        </div>
+      </div>
+    </section>
   </div>
 </div>
-        <!-- Section-->
-        <section class="py-5">
-            <div class="container px-4 px-lg-5 mt-4">
-                <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
-                    <div class="col mb-5">
-                        <div class="card h-100">
-                            <!-- Product image-->
-                            <img class="card-img-top" src="./img/merch/ropa/chaqueta.png" alt="..." />
-                            <!-- Product details-->
-                            <div class="card-body p-4">
-                                <div class="text-center">
-                                    <!-- Product name-->
-                                    <h5 class="fw-bolder">Chaqueta</h5>
-                                    <!-- Product price-->
-                                    $40.00 - $80.00
-                                </div>
-                            </div>
-                            <!-- Product actions-->
-                            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                                <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">Agregar al carrito</a></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col mb-5">
-                        <div class="card h-100">
-                            <!-- Sale badge-->
-                            <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem">Sale</div>
-                            <!-- Product image-->
-                            <img class="card-img-top" src="../img/merch/ropa/chaqueta_mujer.png" alt="..." />
-                            <!-- Product details-->
-                            <div class="card-body p-4">
-                                <div class="text-center">
-                                    <!-- Product name-->
-                                    <h5 class="fw-bolder">Special Item</h5>
-                                    <!-- Product reviews-->
-                                    <div class="d-flex justify-content-center small text-warning mb-2">
-                                        <div class="bi-star-fill"></div>
-                                        <div class="bi-star-fill"></div>
-                                        <div class="bi-star-fill"></div>
-                                        <div class="bi-star-fill"></div>
-                                        <div class="bi-star-fill"></div>
-                                    </div>
-                                    <!-- Product price-->
-                                    <span class="text-muted text-decoration-line-through">$20.00</span>
-                                    $18.00
-                                </div>
-                            </div>
-                            <!-- Product actions-->
-                            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                                <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">Agregar al carrito</a></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col mb-5">
-                        <div class="card h-100">
-                            <!-- Sale badge-->
-                            <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem">Sale</div>
-                            <!-- Product image-->
-                            <img class="card-img-top" src="../img/merch/ropa/sueter.png" alt="..." />
-                            <!-- Product details-->
-                            <div class="card-body p-4">
-                                <div class="text-center">
-                                    <!-- Product name-->
-                                    <h5 class="fw-bolder">Sale Item</h5>
-                                    <!-- Product price-->
-                                    <span class="text-muted text-decoration-line-through">$50.00</span>
-                                    $25.00
-                                </div>
-                            </div>
-                            <!-- Product actions-->
-                            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                                <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">Agregar al carrito</a></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col mb-5">
-                        <div class="card h-100">
-                            <!-- Product image-->
-                            <img class="card-img-top" src="../img/merch/ropa/jacket_negro.png" alt="..." />
-                            <!-- Product details-->
-                            <div class="card-body p-4">
-                                <div class="text-center">
-                                    <!-- Product name-->
-                                    <h5 class="fw-bolder">Popular Item</h5>
-                                    <!-- Product reviews-->
-                                    <div class="d-flex justify-content-center small text-warning mb-2">
-                                        <div class="bi-star-fill"></div>
-                                        <div class="bi-star-fill"></div>
-                                        <div class="bi-star-fill"></div>
-                                        <div class="bi-star-fill"></div>
-                                        <div class="bi-star-fill"></div>
-                                    </div>
-                                    <!-- Product price-->
-                                    $40.00
-                                </div>
-                            </div>
-                            <!-- Product actions-->
-                            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                                <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">Agregar al carrito</a></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col mb-5">
-                        <div class="card h-100">
-                            <!-- Sale badge-->
-                            <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem">Sale</div>
-                            <!-- Product image-->
-                            <img class="card-img-top" src="../img/merch/ropa/sueter2.png" alt="..." />
-                            <!-- Product details-->
-                            <div class="card-body p-4">
-                                <div class="text-center">
-                                    <!-- Product name-->
-                                    <h5 class="fw-bolder">Sale Item</h5>
-                                    <!-- Product price-->
-                                    <span class="text-muted text-decoration-line-through">$50.00</span>
-                                    $25.00
-                                </div>
-                            </div>
-                            <!-- Product actions-->
-                            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                                <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">Agregar al carrito</a></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col mb-5">
-                        <div class="card h-100">
-                            <!-- Product image-->
-                            <img class="card-img-top" src="../img/merch/ropa/gorra3.png" alt="..." />
-                            <!-- Product details-->
-                            <div class="card-body p-4">
-                                <div class="text-center">
-                                    <!-- Product name-->
-                                    <h5 class="fw-bolder">Fancy Product</h5>
-                                    <!-- Product price-->
-                                    $120.00 - $280.00
-                                </div>
-                            </div>
-                            <!-- Product actions-->
-                            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                                <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">View options</a></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col mb-5">
-                        <div class="card h-100">
-                            <!-- Sale badge-->
-                            <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem">Sale</div>
-                            <!-- Product image-->
-                            <img class="card-img-top" src="../img/merch/ropa/chaqueta_mujer1.png" alt="..." />
-                            <!-- Product details-->
-                            <div class="card-body p-4">
-                                <div class="text-center">
-                                    <!-- Product name-->
-                                    <h5 class="fw-bolder">Special Item</h5>
-                                    <!-- Product reviews-->
-                                    <div class="d-flex justify-content-center small text-warning mb-2">
-                                        <div class="bi-star-fill"></div>
-                                        <div class="bi-star-fill"></div>
-                                        <div class="bi-star-fill"></div>
-                                        <div class="bi-star-fill"></div>
-                                        <div class="bi-star-fill"></div>
-                                    </div>
-                                    <!-- Product price-->
-                                    <span class="text-muted text-decoration-line-through">$20.00</span>
-                                    $18.00
-                                </div>
-                            </div>
-                            <!-- Product actions-->
-                            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                                <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">Agregar al carrito</a></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col mb-5">
-                        <div class="card h-100">
-                            <!-- Product image-->
-                            <img class="card-img-top" src="../img/merch/ropa/gorra2.png" alt="..." />
-                            <!-- Product details-->
-                            <div class="card-body p-4">
-                                <div class="text-center">
-                                    <!-- Product name-->
-                                    <h5 class="fw-bolder">Popular Item</h5>
-                                    <!-- Product reviews-->
-                                    <div class="d-flex justify-content-center small text-warning mb-2">
-                                        <div class="bi-star-fill"></div>
-                                        <div class="bi-star-fill"></div>
-                                        <div class="bi-star-fill"></div>
-                                        <div class="bi-star-fill"></div>
-                                        <div class="bi-star-fill"></div>
-                                    </div>
-                                    <!-- Product price-->
-                                    $40.00
-                                </div>
-                            </div>
-                            <!-- Product actions-->
-                            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                                <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">Agregar al carrito</a></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <!-- Footer-->
-        <footer class="py-5 bg-dark">
-            <div class="container"><p class="m-0 text-center text-white">Copyright &copy; Your Website 2023</p></div>
-        </footer>
-        <!-- Bootstrap core JS-->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-        <!-- Core theme JS-->
-        <script src="js/scripts.js"></script>
-    </body>
-</html>
+<style>
+.productos-list { margin-top:32px; }
+.producto-item:hover { box-shadow:0 8px 32px rgba(123,91,132,0.18); }
+</style>
+<script>
+document.getElementById('categoria').addEventListener('change', function() {
+    var categoria = this.value;
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', './public/assets/productos.php?categoria=' + encodeURIComponent(categoria) + '&ajax=1', true);
+    xhr.onload = function() {
+        if (xhr.status === 200) {
+            document.getElementById('productos-list').innerHTML = xhr.responseText;
+        }
+    };
+    xhr.send();
+});
+</script>
