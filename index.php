@@ -958,19 +958,6 @@ if (isset($_SESSION['usuario_id'])) {
           });
         }
       });
-      function filtrarCategoria(categoriaId) {
-  showSection('productos');
-  // Espera a que la sección esté visible y el select exista
-  setTimeout(function() {
-    var select = document.getElementById('categoria');
-    if (select) {
-      select.value = categoriaId;
-      // Dispara el evento change para activar el filtro AJAX
-      var event = new Event('change', { bubbles: true });
-      select.dispatchEvent(event);
-    }
-  }, 100);
-}
     </script>
   </body>
 </html>
