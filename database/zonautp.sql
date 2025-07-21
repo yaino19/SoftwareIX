@@ -244,4 +244,10 @@ CREATE TABLE `usuarios` (
   CONSTRAINT `usuarios_ibfk_1` FOREIGN KEY (`tipo_usuario_id`) REFERENCES `tiposusuario` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+/* Agregar Datos*/
+INSERT INTO productos (nombre, descripcion, precio, categoria_id, imagen_url)
+VALUES
+('Bolsa Blanca', 'Bolsa ecológica blanca con logo UTP', 8.00, 1, 'img/merch/accesorios/bolsa_blanca.png'),
+('Llavero UTP', 'Llavero metálico con logo UTP', 5.00, 1, 'img/merch/accesorios/llavero.png'),
+('Termo Verde', 'Termo verde de acero inoxidable', 15.00, 1, 'img/merch/accesorios/termo_verde.png');
 COMMIT;
