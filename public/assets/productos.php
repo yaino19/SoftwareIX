@@ -12,6 +12,7 @@ if ($categoria) {
 }
 $result = $conn->query($sql);
 
+
 // Si es AJAX, solo devuelve las cards
 if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
     while($row = $result->fetch_assoc()): ?>
