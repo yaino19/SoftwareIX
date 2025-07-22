@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 22-07-2025 a las 11:38:18
+-- Tiempo de generación: 22-07-2025 a las 23:54:59
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -20,77 +20,63 @@ SET time_zone = "+00:00";
 --
 -- Base de datos: `db_zonautp`
 --
-CREATE DATABASE IF NOT EXISTS `db_zonautp` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-USE `db_zonautp`;
 
 DELIMITER $$
 --
 -- Procedimientos
 --
-DROP PROCEDURE IF EXISTS `BuscarMetodoPagoPorId`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `BuscarMetodoPagoPorId` (IN `p_id` INT)   BEGIN
     SELECT * FROM MetodosPago WHERE id = p_id;
 END$$
 
-DROP PROCEDURE IF EXISTS `BuscarPedidoPorId`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `BuscarPedidoPorId` (IN `p_id` INT)   BEGIN
     SELECT * FROM Pedidos WHERE id = p_id;
 END$$
 
-DROP PROCEDURE IF EXISTS `BuscarProductoPorId`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `BuscarProductoPorId` (IN `p_id` INT)   BEGIN
     SELECT * FROM Productos WHERE id = p_id;
 END$$
 
-DROP PROCEDURE IF EXISTS `BuscarUsuarioPorCorreo`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `BuscarUsuarioPorCorreo` (IN `p_correo` VARCHAR(100))   BEGIN
     SELECT * FROM Usuarios WHERE correo = p_correo;
 END$$
 
-DROP PROCEDURE IF EXISTS `BuscarUsuarioPorId`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `BuscarUsuarioPorId` (IN `p_id` BIGINT)   BEGIN
     SELECT * FROM Usuarios WHERE id = p_id;
 END$$
 
-DROP PROCEDURE IF EXISTS `CrearMetodoPago`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `CrearMetodoPago` (IN `p_nombre` VARCHAR(50))   BEGIN
     INSERT INTO MetodosPago (nombre)
     VALUES (p_nombre);
 END$$
 
-DROP PROCEDURE IF EXISTS `CrearPedido`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `CrearPedido` (IN `p_usuario_id` BIGINT, IN `p_total` DECIMAL(10,2))   BEGIN
     INSERT INTO Pedidos (usuario_id, total)
     VALUES (p_usuario_id, p_total);
 END$$
 
-DROP PROCEDURE IF EXISTS `CrearProducto`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `CrearProducto` (IN `p_nombre` VARCHAR(100), IN `p_descripcion` TEXT, IN `p_precio` DECIMAL(10,2), IN `p_categoria_id` INT, IN `p_imagen_url` VARCHAR(255))   BEGIN
     INSERT INTO Productos (nombre, descripcion, precio, categoria_id, imagen_url)
     VALUES (p_nombre, p_descripcion, p_precio, p_categoria_id, p_imagen_url);
 END$$
 
-DROP PROCEDURE IF EXISTS `CrearUsuario`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `CrearUsuario` (IN `p_nombre` VARCHAR(100), IN `p_correo` VARCHAR(100), IN `p_password` VARCHAR(255), IN `p_tipo_usuario_id` INT, IN `p_uid_google` VARCHAR(100))   BEGIN
     INSERT INTO Usuarios (nombre, correo, password, tipo_usuario_id, uid_google)
     VALUES (p_nombre, p_correo, p_password, p_tipo_usuario_id, p_uid_google);
 END$$
 
-DROP PROCEDURE IF EXISTS `EditarMetodoPago`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `EditarMetodoPago` (IN `p_id` INT, IN `p_nombre` VARCHAR(50))   BEGIN
     UPDATE MetodosPago
     SET nombre = p_nombre
     WHERE id = p_id;
 END$$
 
-DROP PROCEDURE IF EXISTS `EditarPedido`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `EditarPedido` (IN `p_id` INT, IN `p_total` DECIMAL(10,2))   BEGIN
     UPDATE Pedidos
     SET total = p_total
     WHERE id = p_id;
 END$$
 
-DROP PROCEDURE IF EXISTS `EditarProducto`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `EditarProducto` (IN `p_id` INT, IN `p_nombre` VARCHAR(100), IN `p_descripcion` TEXT, IN `p_precio` DECIMAL(10,2), IN `p_categoria_id` INT, IN `p_imagen_url` VARCHAR(255))   BEGIN
     UPDATE Productos
     SET nombre = p_nombre,
@@ -101,7 +87,6 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `EditarProducto` (IN `p_id` INT, IN 
     WHERE id = p_id;
 END$$
 
-DROP PROCEDURE IF EXISTS `EditarUsuario`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `EditarUsuario` (IN `p_id` BIGINT, IN `p_nombre` VARCHAR(100), IN `p_correo` VARCHAR(100), IN `p_password` VARCHAR(255), IN `p_tipo_usuario_id` INT, IN `p_uid_google` VARCHAR(100))   BEGIN
     UPDATE Usuarios
     SET nombre = p_nombre,
@@ -112,60 +97,49 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `EditarUsuario` (IN `p_id` BIGINT, I
     WHERE id = p_id;
 END$$
 
-DROP PROCEDURE IF EXISTS `EliminarMetodoPago`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `EliminarMetodoPago` (IN `p_id` INT)   BEGIN
     DELETE FROM MetodosPago WHERE id = p_id;
 END$$
 
-DROP PROCEDURE IF EXISTS `EliminarPedido`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `EliminarPedido` (IN `p_id` INT)   BEGIN
     DELETE FROM Pedidos WHERE id = p_id;
 END$$
 
-DROP PROCEDURE IF EXISTS `EliminarProducto`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `EliminarProducto` (IN `p_id` INT)   BEGIN
     DELETE FROM Productos WHERE id = p_id;
 END$$
 
-DROP PROCEDURE IF EXISTS `EliminarUsuario`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `EliminarUsuario` (IN `p_id` BIGINT)   BEGIN
     DELETE FROM Usuarios WHERE id = p_id;
 END$$
 
-DROP PROCEDURE IF EXISTS `ListarMetodosPago`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `ListarMetodosPago` ()   BEGIN
     SELECT * FROM MetodosPago;
 END$$
 
-DROP PROCEDURE IF EXISTS `ListarPedidos`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `ListarPedidos` ()   BEGIN
     SELECT * FROM Pedidos;
 END$$
 
-DROP PROCEDURE IF EXISTS `ListarProductos`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `ListarProductos` ()   BEGIN
     SELECT * FROM Productos;
 END$$
 
-DROP PROCEDURE IF EXISTS `ListarUsuarios`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `ListarUsuarios` ()   BEGIN
     SELECT * FROM Usuarios;
 END$$
 
-DROP PROCEDURE IF EXISTS `LoginUsuario`$$
 CREATE DEFINER=`jasonpty`@`localhost` PROCEDURE `LoginUsuario` (IN `p_correo` VARCHAR(100), IN `p_password` VARCHAR(255))   BEGIN
     SELECT * FROM Usuarios
     WHERE correo = p_correo AND password = p_password
     LIMIT 1;
 END$$
 
-DROP PROCEDURE IF EXISTS `RegistrarIntentoSesion`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `RegistrarIntentoSesion` (IN `p_usuario_id` BIGINT, IN `p_exito` BOOLEAN, IN `p_ip` VARCHAR(45))   BEGIN
     INSERT INTO IntentosSesion (usuario_id, exito, ip)
     VALUES (p_usuario_id, p_exito, p_ip);
 END$$
 
-DROP PROCEDURE IF EXISTS `RegistrarSesion`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `RegistrarSesion` (IN `p_usuario_id` BIGINT, IN `p_ip` VARCHAR(45), IN `p_user_agent` VARCHAR(255))   BEGIN
     INSERT INTO GestionSesion (usuario_id, ip, user_agent)
     VALUES (p_usuario_id, p_ip, p_user_agent);
@@ -179,12 +153,21 @@ DELIMITER ;
 -- Estructura de tabla para la tabla `carrito`
 --
 
-DROP TABLE IF EXISTS `carrito`;
 CREATE TABLE `carrito` (
   `id` bigint(20) NOT NULL,
   `usuario_id` bigint(20) NOT NULL,
-  `fecha_creacion` timestamp NOT NULL DEFAULT current_timestamp()
+  `fecha_creacion` timestamp NOT NULL DEFAULT current_timestamp(),
+  `fecha_actualizacion` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `estado` enum('activo','inactivo') NOT NULL DEFAULT 'activo'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `carrito`
+--
+
+INSERT INTO `carrito` (`id`, `usuario_id`, `fecha_creacion`, `fecha_actualizacion`, `estado`) VALUES
+(1, 3, '2025-07-22 17:30:22', '2025-07-22 17:30:22', 'activo'),
+(2, 1, '2025-07-22 21:35:42', '2025-07-22 21:35:42', 'activo');
 
 -- --------------------------------------------------------
 
@@ -192,12 +175,13 @@ CREATE TABLE `carrito` (
 -- Estructura de tabla para la tabla `carritoproductos`
 --
 
-DROP TABLE IF EXISTS `carritoproductos`;
 CREATE TABLE `carritoproductos` (
   `id` bigint(20) NOT NULL,
   `carrito_id` bigint(20) NOT NULL,
   `producto_id` bigint(20) NOT NULL,
-  `cantidad` int(11) NOT NULL
+  `cantidad` int(11) NOT NULL DEFAULT 1,
+  `precio_unitario` decimal(10,2) NOT NULL,
+  `fecha_agregado` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -206,7 +190,6 @@ CREATE TABLE `carritoproductos` (
 -- Estructura de tabla para la tabla `categorias`
 --
 
-DROP TABLE IF EXISTS `categorias`;
 CREATE TABLE `categorias` (
   `id` bigint(20) NOT NULL,
   `nombre` varchar(100) NOT NULL
@@ -227,7 +210,6 @@ INSERT INTO `categorias` (`id`, `nombre`) VALUES
 -- Estructura de tabla para la tabla `detallepedido`
 --
 
-DROP TABLE IF EXISTS `detallepedido`;
 CREATE TABLE `detallepedido` (
   `id` bigint(20) NOT NULL,
   `pedido_id` bigint(20) NOT NULL,
@@ -242,7 +224,6 @@ CREATE TABLE `detallepedido` (
 -- Estructura de tabla para la tabla `gestionsesion`
 --
 
-DROP TABLE IF EXISTS `gestionsesion`;
 CREATE TABLE `gestionsesion` (
   `id` bigint(20) NOT NULL,
   `usuario_id` bigint(20) NOT NULL,
@@ -262,7 +243,12 @@ INSERT INTO `gestionsesion` (`id`, `usuario_id`, `fecha_inicio`, `ip`, `user_age
 (4, 3, '2025-07-21 23:03:39', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36 Edg/138.0.0.0'),
 (5, 3, '2025-07-22 06:38:17', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36 Edg/138.0.0.0'),
 (6, 1, '2025-07-22 07:51:29', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36 Edg/138.0.0.0'),
-(7, 3, '2025-07-22 07:52:04', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36 Edg/138.0.0.0');
+(7, 3, '2025-07-22 07:52:04', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36 Edg/138.0.0.0'),
+(8, 3, '2025-07-22 16:51:50', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36 Edg/138.0.0.0'),
+(9, 3, '2025-07-22 20:54:45', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36 Edg/138.0.0.0'),
+(10, 3, '2025-07-22 20:54:45', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36 Edg/138.0.0.0'),
+(11, 1, '2025-07-22 21:35:40', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36 Edg/138.0.0.0'),
+(12, 3, '2025-07-22 21:36:51', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36 Edg/138.0.0.0');
 
 -- --------------------------------------------------------
 
@@ -270,7 +256,6 @@ INSERT INTO `gestionsesion` (`id`, `usuario_id`, `fecha_inicio`, `ip`, `user_age
 -- Estructura de tabla para la tabla `intentossesion`
 --
 
-DROP TABLE IF EXISTS `intentossesion`;
 CREATE TABLE `intentossesion` (
   `id` bigint(20) NOT NULL,
   `usuario_id` bigint(20) NOT NULL,
@@ -285,7 +270,6 @@ CREATE TABLE `intentossesion` (
 -- Estructura de tabla para la tabla `mensajes`
 --
 
-DROP TABLE IF EXISTS `mensajes`;
 CREATE TABLE `mensajes` (
   `id` bigint(20) NOT NULL,
   `usuario_id` bigint(20) NOT NULL,
@@ -300,9 +284,7 @@ CREATE TABLE `mensajes` (
 --
 
 INSERT INTO `mensajes` (`id`, `usuario_id`, `asunto`, `mensaje`, `fecha_envio`, `leido`) VALUES
-(3, 3, 'Prueba', '112', '2025-07-22 07:49:27', 1),
-(4, 3, 'Prueba 2', '2222', '2025-07-22 07:50:20', 1),
-(5, 1, 'Prueba desde usuario Jason', 'Prueba de usuario - feedback', '2025-07-22 07:51:54', 0);
+(7, 1, 'Prueb', 'Devolucion', '2025-07-22 21:36:30', 0);
 
 -- --------------------------------------------------------
 
@@ -310,7 +292,6 @@ INSERT INTO `mensajes` (`id`, `usuario_id`, `asunto`, `mensaje`, `fecha_envio`, 
 -- Estructura de tabla para la tabla `metodospago`
 --
 
-DROP TABLE IF EXISTS `metodospago`;
 CREATE TABLE `metodospago` (
   `id` bigint(20) NOT NULL,
   `nombre` varchar(50) NOT NULL
@@ -322,7 +303,6 @@ CREATE TABLE `metodospago` (
 -- Estructura de tabla para la tabla `pagos`
 --
 
-DROP TABLE IF EXISTS `pagos`;
 CREATE TABLE `pagos` (
   `id` bigint(20) NOT NULL,
   `pedido_id` bigint(20) NOT NULL,
@@ -337,7 +317,6 @@ CREATE TABLE `pagos` (
 -- Estructura de tabla para la tabla `pedidos`
 --
 
-DROP TABLE IF EXISTS `pedidos`;
 CREATE TABLE `pedidos` (
   `id` bigint(20) NOT NULL,
   `usuario_id` bigint(20) NOT NULL,
@@ -351,7 +330,6 @@ CREATE TABLE `pedidos` (
 -- Estructura de tabla para la tabla `productos`
 --
 
-DROP TABLE IF EXISTS `productos`;
 CREATE TABLE `productos` (
   `id` bigint(20) NOT NULL,
   `nombre` varchar(100) NOT NULL,
@@ -367,9 +345,6 @@ CREATE TABLE `productos` (
 --
 
 INSERT INTO `productos` (`id`, `nombre`, `descripcion`, `precio`, `categoria_id`, `imagen_url`, `activo`) VALUES
-(14, 'jacket_negro', 'Jacket Negro personlizdo', 27.00, 1, 'img/productos/687f5579d52f2_1753175417.png', 1),
-(15, 'Termo UTP', 'Termo térmico con logo de la Universidad Tecnológica de Panamá', 12.00, 1, 'img/productos/687f57c5aa87d_1753176005.png', 1),
-(16, 'Llavero UTP', 'Llavero oficial con diseño universitario', 5.00, 2, 'img/productos/687f588eebdf6_1753176206.png', 1),
 (17, 'Bolsa UTP', 'Bolsa ecológica resistente con logo institucional', 8.00, 2, 'img/productos/687f58981a9f4_1753176216.png', 1),
 (18, 'Taza UTP', 'Taza de cerámica con logo de la universidad', 7.00, 3, 'img/productos/687f58a9c78a5_1753176233.png', 1),
 (19, 'Portacredenciales UTP', 'Portacredenciales oficial para estudiantes y personal', 6.00, 2, 'img/productos/687f58bf80eef_1753176255.png', 1),
@@ -382,7 +357,10 @@ INSERT INTO `productos` (`id`, `nombre`, `descripcion`, `precio`, `categoria_id`
 (26, 'Gorra Negra UTP', 'Gorra oficial negra con logo universitario', 10.00, 1, 'img/productos/687f582c4494a_1753176108.png', 1),
 (27, 'Suéter UTP', 'Suéter universitario de alta calidad', 18.00, 1, 'img/productos/687f5835662c3_1753176117.png', 1),
 (28, 'Chaqueta Mujer UTP', 'Chaqueta diseñada especialmente para mujeres', 16.00, 1, 'img/productos/687f583c57527_1753176124.png', 1),
-(29, 'Chaqueta Blanca UTP', 'Chaqueta blanca con diseño institucional', 15.00, 1, 'img/productos/687f5845a9163_1753176133.png', 1);
+(29, 'Chaqueta Blanca UTP', 'Chaqueta blanca con diseño institucional', 15.00, 1, 'img/productos/687f5845a9163_1753176133.png', 1),
+(30, 'Pulsera UTP', 'Pulsera UTP', 3.00, 2, 'img/productos/687fdccf46f44_1753210063.png', 1),
+(31, 'Llavero gamer UTP', 'Llavero gamer', 10.00, 2, 'img/productos/687fea7d10f37_1753213565.png', 1),
+(33, 'Termo verde', 'Termo', 12.00, 2, 'img/productos/687ff46f928ce_1753216111.png', 1);
 
 -- --------------------------------------------------------
 
@@ -390,7 +368,6 @@ INSERT INTO `productos` (`id`, `nombre`, `descripcion`, `precio`, `categoria_id`
 -- Estructura de tabla para la tabla `recuperacion_password`
 --
 
-DROP TABLE IF EXISTS `recuperacion_password`;
 CREATE TABLE `recuperacion_password` (
   `user_id` bigint(20) NOT NULL,
   `codigo` varchar(10) NOT NULL,
@@ -402,7 +379,7 @@ CREATE TABLE `recuperacion_password` (
 --
 
 INSERT INTO `recuperacion_password` (`user_id`, `codigo`, `creado_en`) VALUES
-(3, '838170', '2025-07-21 17:38:55'),
+(3, '980452', '2025-07-22 16:50:14'),
 (4, '359544', '2025-07-21 17:36:50');
 
 -- --------------------------------------------------------
@@ -411,7 +388,6 @@ INSERT INTO `recuperacion_password` (`user_id`, `codigo`, `creado_en`) VALUES
 -- Estructura de tabla para la tabla `tiposusuario`
 --
 
-DROP TABLE IF EXISTS `tiposusuario`;
 CREATE TABLE `tiposusuario` (
   `id` int(11) NOT NULL,
   `tipo` varchar(50) NOT NULL
@@ -432,7 +408,6 @@ INSERT INTO `tiposusuario` (`id`, `tipo`) VALUES
 -- Estructura de tabla para la tabla `usuarios`
 --
 
-DROP TABLE IF EXISTS `usuarios`;
 CREATE TABLE `usuarios` (
   `id` bigint(20) NOT NULL,
   `nombre` varchar(100) NOT NULL,
@@ -462,15 +437,19 @@ INSERT INTO `usuarios` (`id`, `nombre`, `correo`, `password`, `tipo_usuario_id`,
 --
 ALTER TABLE `carrito`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `usuario_id` (`usuario_id`);
+  ADD KEY `idx_usuario_id` (`usuario_id`),
+  ADD KEY `idx_estado` (`estado`),
+  ADD KEY `idx_carrito_usuario_estado` (`usuario_id`,`estado`);
 
 --
 -- Indices de la tabla `carritoproductos`
 --
 ALTER TABLE `carritoproductos`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `carrito_id` (`carrito_id`),
-  ADD KEY `producto_id` (`producto_id`);
+  ADD UNIQUE KEY `unique_carrito_producto` (`carrito_id`,`producto_id`),
+  ADD KEY `idx_carrito_id` (`carrito_id`),
+  ADD KEY `idx_producto_id` (`producto_id`),
+  ADD KEY `idx_carritoproductos_carrito_producto` (`carrito_id`,`producto_id`);
 
 --
 -- Indices de la tabla `categorias`
@@ -563,13 +542,13 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de la tabla `carrito`
 --
 ALTER TABLE `carrito`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `carritoproductos`
 --
 ALTER TABLE `carritoproductos`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
 
 --
 -- AUTO_INCREMENT de la tabla `categorias`
@@ -587,19 +566,19 @@ ALTER TABLE `detallepedido`
 -- AUTO_INCREMENT de la tabla `gestionsesion`
 --
 ALTER TABLE `gestionsesion`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT de la tabla `intentossesion`
 --
 ALTER TABLE `intentossesion`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `mensajes`
 --
 ALTER TABLE `mensajes`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT de la tabla `metodospago`
@@ -623,7 +602,7 @@ ALTER TABLE `pedidos`
 -- AUTO_INCREMENT de la tabla `productos`
 --
 ALTER TABLE `productos`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 --
 -- AUTO_INCREMENT de la tabla `tiposusuario`
@@ -645,14 +624,14 @@ ALTER TABLE `usuarios`
 -- Filtros para la tabla `carrito`
 --
 ALTER TABLE `carrito`
-  ADD CONSTRAINT `fk_carrito_usuario` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `carrito_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE;
 
 --
 -- Filtros para la tabla `carritoproductos`
 --
 ALTER TABLE `carritoproductos`
-  ADD CONSTRAINT `fk_carritoproductos_carrito` FOREIGN KEY (`carrito_id`) REFERENCES `carrito` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_carritoproductos_producto` FOREIGN KEY (`producto_id`) REFERENCES `productos` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `carritoproductos_ibfk_1` FOREIGN KEY (`carrito_id`) REFERENCES `carrito` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `carritoproductos_ibfk_2` FOREIGN KEY (`producto_id`) REFERENCES `productos` (`id`) ON DELETE CASCADE;
 
 --
 -- Filtros para la tabla `detallepedido`
@@ -714,25 +693,3 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-KEY (`categoria_id`) REFERENCES `categorias` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
-
---
--- Filtros para la tabla `recuperacion_password`
---
-ALTER TABLE `recuperacion_password`
-  ADD CONSTRAINT `fk_recuperacion_password_usuario` FOREIGN KEY (`user_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Filtros para la tabla `usuarios`
---
-ALTER TABLE `usuarios`
-  ADD CONSTRAINT `usuarios_ibfk_1` FOREIGN KEY (`tipo_usuario_id`) REFERENCES `tiposusuario` (`id`);
-COMMIT;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-1, 'img/merch/accesorios/bolsa_blanca.png'),
-('Llavero UTP', 'Llavero metálico con logo UTP', 5.00, 1, 'img/merch/accesorios/llavero.png'),
-('Termo Verde', 'Termo verde de acero inoxidable', 15.00, 1, 'img/merch/accesorios/termo_verde.png');
-COMMIT;
