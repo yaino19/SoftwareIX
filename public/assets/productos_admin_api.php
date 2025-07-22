@@ -56,6 +56,9 @@ switch ($action) {
     case 'cambiar_estado':
         cambiarEstadoProducto();
         break;
+    case 'estadisticas':
+        obtenerEstadisticas();
+        break;
     default:
         echo json_encode(['success' => false, 'message' => 'Acción no válida']);
         break;
@@ -209,12 +212,8 @@ function listarProductos() {
     $precioPromedioResult = $conn2->query($precioPromedioQuery);
     $precioPromedio = $precioPromedioResult->fetch_assoc()['promedio'] ?? 0;
     
-    // Productos agregados este mes (aproximación basada en IDs más altos)
-    $productosMesQuery = "SELECT COUNT(*) as total FROM productos WHERE MONTH(NOW()) = MONTH(NOW()) AND YEAR(NOW()) = YEAR(NOW())";
-    // Como no tenemos fecha de creación, usaremos una estimación basada en los últimos IDs
-    $ultimosProductosQuery = "SELECT COUNT(*) as total FROM productos WHERE id > (SELECT MAX(id) - FLOOR(MAX(id) * 0.2) FROM productos)";
-    $productosMesResult = $conn2->query($ultimosProductosQuery);
-    $productosMes = $productosMesResult->fetch_assoc()['total'];
+    // Como no hay fecha de creación, productosMes será igual al total de productos
+    $productosMes = $totalProductosCompleto;
     
     $conn2->close();
     $conn->close();
@@ -224,8 +223,8 @@ function listarProductos() {
         'productos' => $productos,
         'totalPaginas' => $totalPaginas,
         'paginaActual' => $pagina,
-        'totalProductos' => $total,
-        'total' => $total,
+        'totalProductos' => $totalProductosCompleto, // total general
+        'total' => $total, // total filtrado
         'estadisticas' => [
             'totalProductos' => $totalProductosCompleto,
             'totalCategorias' => $totalCategorias,
@@ -617,8 +616,62 @@ function cambiarEstadoProducto() {
     $conn->close();
 }
 
+function obtenerEstadisticas() {
+    global $host, $username, $password, $database;
+    
+    $conn = new mysqli($host, $username, $password, $database);
+    if ($conn->connect_error) {
+        echo json_encode(['success' => false, 'message' => 'Error de conexión']);
+        return;
+    }
+    
+    // Total de productos (corregido: solo cuenta productos, sin join)
+    $stmt = $conn->prepare("SELECT COUNT(*) as total FROM productos");
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $totalProductos = 0;
+    if ($result && $row = $result->fetch_assoc()) {
+        $totalProductos = $row['total'];
+    }
+    $stmt->close();
+    
+    // Total de categorías
+    $stmt = $conn->prepare("SELECT COUNT(*) as total FROM categorias");
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $totalCategorias = 0;
+    if ($result && $row = $result->fetch_assoc()) {
+        $totalCategorias = $row['total'];
+    }
+    $stmt->close();
+    
+    // Precio promedio
+    $stmt = $conn->prepare("SELECT AVG(p.precio) as promedio FROM productos p WHERE p.precio > 0");
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $precioPromedio = 0;
+    if ($result && $row = $result->fetch_assoc()) {
+        $precioPromedio = $row['promedio'] ?? 0;
+    }
+    $stmt->close();
+    
+    // Total de productos (para la tarjeta y para productosMes si no hay fecha_creacion)
+    $productosMes = $totalProductos;
+    
+    $conn->close();
+    
+    echo json_encode([
+        'success' => true,
+        'estadisticas' => [
+            'totalProductos' => (int)$totalProductos,
+            'totalCategorias' => (int)$totalCategorias,
+            'precioPromedio' => round($precioPromedio, 2),
+            'productosMes' => (int)$productosMes
+        ]
+    ]);
+}
+
 // Crear directorio de uploads si no existe
 if (!is_dir(__DIR__ . '/img/productos/')) {
     mkdir(__DIR__ . '/img/productos/', 0755, true);
 }
-?>

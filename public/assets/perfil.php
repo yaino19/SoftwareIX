@@ -36,7 +36,6 @@ if (isset($_SESSION['usuario_id'])) {
       <div class="profile-details">
         <div class="profile-tabs">
           <button class="tab-btn active" onclick="showTab('info', event)">Información Personal</button>
-          <button class="tab-btn" onclick="showTab('notifications', event)">Notificaciones</button>
         </div>
         <div id="info" class="tab-content active">
           <div class="info-grid">
@@ -78,29 +77,6 @@ if (isset($_SESSION['usuario_id'])) {
             <div>
               <strong>Pedido #003</strong>
               <p>Llavero UTP - Procesando</p>
-            </div>
-          </div>
-        </div>
-        <div id="notifications" class="tab-content">
-          <div class="notification-item">
-            <i class="fas fa-bell notification-icon"></i>
-            <div>
-              <strong>Nuevo producto disponible</strong>
-              <p>Sudadera UTP edición limitada</p>
-            </div>
-          </div>
-          <div class="notification-item">
-            <i class="fas fa-tag notification-icon"></i>
-            <div>
-              <strong>Descuento especial</strong>
-              <p>20% off en toda la tienda - Válido hasta el 31 de julio</p>
-            </div>
-          </div>
-          <div class="notification-item">
-            <i class="fas fa-truck notification-icon"></i>
-            <div>
-              <strong>Pedido entregado</strong>
-              <p>Tu pedido #001 ha sido entregado exitosamente</p>
             </div>
           </div>
         </div>
