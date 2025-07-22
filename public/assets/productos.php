@@ -82,7 +82,7 @@ if (!empty($params)) {
 if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
     while($row = $result->fetch_assoc()): ?>
       <div class="producto-card-wrapper">
-        <div class="producto-card-enhanced">
+        <div class="producto-card-enhanced" data-producto-id="<?php echo $row['id']; ?>">
           <div class="producto-image-container">
             <img class="producto-img-enhanced" src="./public/assets/<?php echo htmlspecialchars($row['imagen_url']); ?>" alt="<?php echo htmlspecialchars($row['nombre']); ?>" />
           </div>
@@ -194,7 +194,7 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
       <div id="productos-list" class="productos-grid">
           <?php while($row = $result->fetch_assoc()): ?>
             <div class="producto-card-wrapper">
-              <div class="producto-card-enhanced">
+              <div class="producto-card-enhanced" data-producto-id="<?php echo $row['id']; ?>">
                 <div class="producto-image-container">
                   <img class="producto-img-enhanced" src="./public/assets/<?php echo htmlspecialchars($row['imagen_url']); ?>" alt="<?php echo htmlspecialchars($row['nombre']); ?>" />
                 </div>
@@ -215,6 +215,39 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
     </div>
   </div>
 </div>
+
+<!-- Carrito Flotante -->
+<div id="carrito-flotante" class="carrito-flotante">
+    <div class="carrito-icono" onclick="toggleCarrito()">
+        <i class="fas fa-shopping-cart"></i>
+        <span id="carrito-contador" class="carrito-contador">0</span>
+    </div>
+    
+    <div id="carrito-panel" class="carrito-panel">
+        <div class="carrito-header">
+            <h3><i class="fas fa-shopping-cart"></i> Mi Carrito</h3>
+            <button class="carrito-cerrar" onclick="toggleCarrito()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div id="carrito-items" class="carrito-items">
+            <!-- Los productos del carrito se cargan aquí -->
+        </div>
+        
+        <div class="carrito-footer">
+            <div class="carrito-total">
+                <strong>Total: $<span id="carrito-total">0.00</span></strong>
+            </div>
+            <div class="carrito-acciones">
+                <button class="btn-vaciar" onclick="vaciarCarrito()">
+                    <i class="fas fa-trash"></i> Vaciar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <style>
   /* === ESTILOS MEJORADOS PARA PRODUCTOS === */
   .productos-section {
@@ -918,6 +951,389 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
       0% { transform: translate(-50%, -50%) rotate(0deg); }
       100% { transform: translate(-50%, -50%) rotate(360deg); }
   }
+
+  /* === ESTILOS DEL CARRITO FLOTANTE === */
+  .carrito-flotante {
+      position: fixed !important;
+      bottom: 20px !important;
+      left: 20px !important;
+      z-index: 999999 !important;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+
+  .carrito-icono {
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, #1b081d, #7b5b84);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 8px 25px rgba(27, 8, 29, 0.3);
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+      border: 3px solid rgba(255, 255, 255, 0.1);
+      z-index: 999999 !important;
+  }
+
+  .carrito-icono:hover {
+      transform: translateY(-2px) scale(1.05);
+      box-shadow: 0 12px 35px rgba(27, 8, 29, 0.4);
+      background: linear-gradient(135deg, #7b5b84, #1b081d);
+  }
+
+  .carrito-icono i {
+      color: white;
+      font-size: 1.4em;
+      transition: transform 0.2s ease;
+  }
+
+  .carrito-icono:hover i {
+      transform: scale(1.1);
+  }
+
+  .carrito-contador {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+      color: white;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8em;
+      font-weight: 700;
+      border: 2px solid white;
+      box-shadow: 0 2px 8px rgba(238, 90, 82, 0.3);
+      transform: scale(0);
+      transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  }
+
+  .carrito-contador.visible {
+      transform: scale(1);
+  }
+
+  .carrito-panel {
+      position: absolute;
+      bottom: 80px;
+      left: 0;
+      width: 380px;
+      max-width: 90vw;
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.98), rgba(248, 249, 250, 0.95));
+      backdrop-filter: blur(20px);
+      border-radius: 20px;
+      box-shadow: 
+          0 20px 60px rgba(27, 8, 29, 0.25),
+          0 8px 30px rgba(123, 91, 132, 0.15),
+          inset 0 1px 0 rgba(255, 255, 255, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      transform: translateY(20px) scale(0.95);
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      max-height: 500px;
+      display: flex;
+      flex-direction: column;
+      z-index: 999999 !important;
+  }
+
+  .carrito-panel.abierto {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+      visibility: visible;
+  }
+
+  .carrito-header {
+      padding: 20px 25px 15px;
+      border-bottom: 1px solid rgba(27, 8, 29, 0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(135deg, rgba(27, 8, 29, 0.05), transparent);
+  }
+
+  .carrito-header h3 {
+      margin: 0;
+      font-size: 1.2em;
+      font-weight: 700;
+      color: #1b081d;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+  }
+
+  .carrito-header h3 i {
+      color: #7b5b84;
+  }
+
+  .carrito-cerrar {
+      background: none;
+      border: none;
+      font-size: 1.2em;
+      color: #666;
+      cursor: pointer;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+  }
+
+  .carrito-cerrar:hover {
+      background: rgba(27, 8, 29, 0.1);
+      color: #1b081d;
+  }
+
+  .carrito-items {
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px 0;
+      max-height: 300px;
+  }
+
+  .carrito-item {
+      display: flex;
+      align-items: center;
+      padding: 15px 25px;
+      border-bottom: 1px solid rgba(27, 8, 29, 0.05);
+      transition: background 0.2s ease;
+  }
+
+  .carrito-item:hover {
+      background: rgba(27, 8, 29, 0.02);
+  }
+
+  .carrito-item:last-child {
+      border-bottom: none;
+  }
+
+  .carrito-item-imagen {
+      width: 50px;
+      height: 50px;
+      border-radius: 8px;
+      object-fit: cover;
+      margin-right: 15px;
+      background: #f8f9fa;
+      border: 1px solid rgba(27, 8, 29, 0.1);
+  }
+
+  .carrito-item-info {
+      flex: 1;
+      min-width: 0;
+  }
+
+  .carrito-item-nombre {
+      font-weight: 600;
+      color: #1b081d;
+      margin: 0 0 5px 0;
+      font-size: 0.95em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+  }
+
+  .carrito-item-precio {
+      color: #7b5b84;
+      font-weight: 700;
+      font-size: 0.9em;
+  }
+
+  .carrito-item-controles {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+  }
+
+  .carrito-item-cantidad {
+      display: flex;
+      align-items: center;
+      background: rgba(27, 8, 29, 0.05);
+      border-radius: 20px;
+      padding: 2px;
+  }
+
+  .btn-cantidad {
+      background: none;
+      border: none;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      color: #7b5b84;
+      font-weight: 700;
+  }
+
+  .btn-cantidad:hover {
+      background: #7b5b84;
+      color: white;
+      transform: scale(1.1);
+  }
+
+  .cantidad-numero {
+      min-width: 30px;
+      text-align: center;
+      font-weight: 600;
+      color: #1b081d;
+      font-size: 0.9em;
+  }
+
+  .btn-eliminar-item {
+      background: none;
+      border: none;
+      color: #dc3545;
+      cursor: pointer;
+      padding: 5px;
+      border-radius: 4px;
+      transition: all 0.2s ease;
+  }
+
+  .btn-eliminar-item:hover {
+      background: rgba(220, 53, 69, 0.1);
+      transform: scale(1.1);
+  }
+
+  .carrito-vacio {
+      text-align: center;
+      padding: 40px 25px;
+      color: #666;
+  }
+
+  .carrito-vacio i {
+      font-size: 3em;
+      color: #ddd;
+      margin-bottom: 15px;
+  }
+
+  .carrito-footer {
+      padding: 20px 25px;
+      border-top: 1px solid rgba(27, 8, 29, 0.1);
+      background: linear-gradient(135deg, rgba(27, 8, 29, 0.02), transparent);
+  }
+
+  .carrito-total {
+      text-align: center;
+      margin-bottom: 15px;
+      font-size: 1.1em;
+      color: #1b081d;
+  }
+
+  .carrito-acciones {
+      display: flex;
+      gap: 10px;
+  }
+
+  .btn-vaciar,
+  .btn-checkout {
+      flex: 1;
+      padding: 12px 16px;
+      border: none;
+      border-radius: 25px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 0.9em;
+  }
+
+  .btn-vaciar {
+      background: linear-gradient(135deg, #6c757d, #5a6268);
+      color: white;
+  }
+
+  .btn-vaciar:hover {
+      background: linear-gradient(135deg, #5a6268, #495057);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+  }
+
+  .btn-checkout {
+      background: linear-gradient(135deg, #1b081d, #7b5b84);
+      color: white;
+  }
+
+  .btn-checkout:hover {
+      background: linear-gradient(135deg, #7b5b84, #1b081d);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(27, 8, 29, 0.3);
+  }
+
+  /* Responsive del carrito */
+  @media (max-width: 480px) {
+      .carrito-panel {
+          width: calc(100vw - 40px);
+          left: -10px;
+      }
+      
+      .carrito-item {
+          padding: 12px 20px;
+      }
+      
+      .carrito-item-imagen {
+          width: 40px;
+          height: 40px;
+          margin-right: 10px;
+      }
+      
+      .carrito-acciones {
+          flex-direction: column;
+      }
+  }
+
+  /* Notificaciones Toast */
+  .toast-notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: linear-gradient(135deg, #28a745, #20c997);
+      color: white;
+      padding: 15px 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+      z-index: 100000;
+      transform: translateX(400px);
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      max-width: 300px;
+  }
+
+  .toast-notification.show {
+      transform: translateX(0);
+  }
+
+  .toast-notification.error {
+      background: linear-gradient(135deg, #dc3545, #c82333);
+      box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+  }
+
+  .toast-close {
+      background: none;
+      border: none;
+      color: white;
+      cursor: pointer;
+      font-size: 1.1em;
+      margin-left: auto;
+      padding: 0;
+      opacity: 0.8;
+  }
+
+  .toast-close:hover {
+      opacity: 1;
+  }
 </style>
 <script>
   document.addEventListener('DOMContentLoaded', function() {
@@ -930,6 +1346,13 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
           link.rel = 'stylesheet';
           link.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css';
           document.head.appendChild(link);
+      }
+      
+      // Cargar el sistema de sincronización del carrito
+      if (!document.querySelector('script[src*="carrito-sync.js"]')) {
+          const script = document.createElement('script');
+          script.src = './public/assets/js/carrito-sync.js';
+          document.head.appendChild(script);
       }
 
       categoriaSelect.addEventListener('change', function() {
@@ -1073,6 +1496,340 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
               console.error('Error de conexión');
           };
           xhr.send();
+      });
+
+      // === FUNCIONALIDAD DEL CARRITO ===
+      let carritoAbierto = false;
+      
+      // Cargar carrito al inicializar
+      cargarCarrito();
+      
+      // Configurar sincronización del carrito (con delay para asegurar que carrito-sync.js se cargue)
+      setTimeout(() => {
+          if (window.carritoSync) {
+              window.carritoSync.agregarCallback(() => {
+                  cargarCarrito();
+                  // NO mostrar mensaje aquí - solo actualizar silenciosamente
+              });
+          }
+      }, 500);
+      
+      // Event listener para botones "Agregar al carrito"
+      document.addEventListener('click', function(e) {
+          if (e.target.closest('.producto-button-enhanced')) {
+              e.preventDefault();
+              const button = e.target.closest('.producto-button-enhanced');
+              const card = button.closest('.producto-card-enhanced');
+              
+              // Extraer información del producto
+              const nombre = card.querySelector('.producto-title-enhanced').textContent;
+              const precio = card.querySelector('.producto-price-enhanced').textContent.replace('$', '');
+              const imagen = card.querySelector('.producto-img-enhanced')?.src || '';
+              const productoId = card.dataset.productoId;
+              
+              if (productoId) {
+                  agregarAlCarrito(productoId, nombre, precio, imagen);
+              } else {
+                  if (window.mensajeUnico) {
+                      window.mensajeUnico.mostrar('Error: No se pudo identificar el producto', 'error');
+                  }
+              }
+          }
+      });
+
+      // Funciones del carrito
+      window.toggleCarrito = function() {
+          carritoAbierto = !carritoAbierto;
+          const panel = document.getElementById('carrito-panel');
+          
+          if (carritoAbierto) {
+              panel.classList.add('abierto');
+          } else {
+              panel.classList.remove('abierto');
+          }
+      };
+
+      function agregarAlCarrito(productoId, nombre, precio, imagen = '') {
+          const data = {
+              action: 'agregar',
+              producto_id: productoId,
+              cantidad: 1
+          };
+          
+          fetch('./public/assets/carrito_api.php', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(data)
+          })
+          .then(response => response.json())
+          .then(data => {
+              if (data.success) {
+                  // Solo mostrar "Agregado correctamente" al agregar productos
+                  if (window.mensajeUnico) {
+                      window.mensajeUnico.mostrar('Agregado correctamente ✅');
+                  }
+                  cargarCarrito();
+                  
+                  // Notificar cambios usando el sistema mejorado
+                  if (window.carritoSync) {
+                      window.carritoSync.notificarCambio();
+                  }
+                  
+                  // Efecto visual en el botón
+                  const botones = document.querySelectorAll('.producto-button-enhanced');
+                  botones.forEach(btn => {
+                      const card = btn.closest('.producto-card-enhanced');
+                      if (card && card.dataset.productoId == productoId) {
+                          btn.style.background = 'linear-gradient(135deg, #28a745, #20c997)';
+                          btn.innerHTML = '<i class="fas fa-check"></i> Agregado';
+                          
+                          setTimeout(() => {
+                              btn.style.background = '';
+                              btn.innerHTML = '<i class="fas fa-shopping-cart"></i> Agregar al carrito';
+                          }, 2000);
+                      }
+                  });
+              } else {
+                  if (window.mensajeUnico) {
+                      window.mensajeUnico.mostrar(data.message || 'Error al agregar producto', 'error');
+                  }
+              }
+          })
+          .catch(error => {
+              console.error('Error:', error);
+              if (window.mensajeUnico) {
+                  window.mensajeUnico.mostrar('Error de conexión', 'error');
+              }
+          });
+      }
+
+      function cargarCarrito() {
+          fetch('./public/assets/carrito_api.php?action=obtener')
+          .then(response => response.json())
+          .then(data => {
+              if (data.success) {
+                  mostrarCarrito(data.productos, data.total);
+                  actualizarContador(data.cantidad_total);
+              }
+          })
+          .catch(error => {
+              console.error('Error al cargar carrito:', error);
+          });
+      }
+
+      function mostrarCarrito(productos, total) {
+          const container = document.getElementById('carrito-items');
+          
+          if (productos.length === 0) {
+              container.innerHTML = `
+                  <div class="carrito-vacio">
+                      <i class="fas fa-shopping-cart"></i>
+                      <p>Tu carrito está vacío</p>
+                      <small>¡Agrega algunos productos!</small>
+                  </div>
+              `;
+          } else {
+              container.innerHTML = productos.map(producto => `
+                  <div class="carrito-item">
+                      <img src="./public/assets/${producto.imagen_url || 'placeholder.jpg'}" 
+                           alt="${producto.nombre}" 
+                           class="carrito-item-imagen">
+                      <div class="carrito-item-info">
+                          <div class="carrito-item-nombre">${producto.nombre}</div>
+                          <div class="carrito-item-precio">$${parseFloat(producto.precio).toFixed(2)}</div>
+                      </div>
+                      <div class="carrito-item-controles">
+                          <div class="carrito-item-cantidad">
+                              <button class="btn-cantidad" onclick="cambiarCantidad(${producto.carrito_producto_id}, ${producto.cantidad - 1})">-</button>
+                              <span class="cantidad-numero">${producto.cantidad}</span>
+                              <button class="btn-cantidad" onclick="cambiarCantidad(${producto.carrito_producto_id}, ${producto.cantidad + 1})">+</button>
+                          </div>
+                          <button class="btn-eliminar-item" onclick="eliminarDelCarrito(${producto.carrito_producto_id})">
+                              <i class="fas fa-trash"></i>
+                          </button>
+                      </div>
+                  </div>
+              `).join('');
+          }
+          
+          document.getElementById('carrito-total').textContent = parseFloat(total).toFixed(2);
+      }
+
+      function actualizarContador(cantidad) {
+          const contador = document.getElementById('carrito-contador');
+          contador.textContent = cantidad;
+          
+          if (cantidad > 0) {
+              contador.classList.add('visible');
+          } else {
+              contador.classList.remove('visible');
+          }
+      }
+
+      window.cambiarCantidad = function(carritoProductoId, nuevaCantidad) {
+          if (nuevaCantidad < 1) {
+              eliminarDelCarrito(carritoProductoId);
+              return;
+          }
+          
+          const data = {
+              action: 'actualizar',
+              carrito_producto_id: carritoProductoId,
+              cantidad: nuevaCantidad
+          };
+          
+          fetch('./public/assets/carrito_api.php', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(data)
+          })
+          .then(response => response.json())
+          .then(data => {
+              if (data.success) {
+                  cargarCarrito();
+                  
+                  // Mostrar "Carrito actualizado" al cambiar cantidad
+                  if (window.mensajeUnico) {
+                      window.mensajeUnico.mostrar('Carrito actualizado ✅');
+                  }
+                  
+                  // Notificar cambios usando el sistema mejorado
+                  if (window.carritoSync) {
+                      window.carritoSync.notificarCambio();
+                  }
+              } else {
+                  if (window.mensajeUnico) {
+                      window.mensajeUnico.mostrar(data.message || 'Error al actualizar cantidad', 'error');
+                  }
+              }
+          })
+          .catch(error => {
+              console.error('Error:', error);
+              if (window.mensajeUnico) {
+                  window.mensajeUnico.mostrar('Error de conexión', 'error');
+              }
+          });
+      };
+
+      window.eliminarDelCarrito = function(carritoProductoId) {
+          const data = {
+              action: 'eliminar',
+              carrito_producto_id: carritoProductoId
+          };
+          
+          fetch('./public/assets/carrito_api.php', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(data)
+          })
+          .then(response => response.json())
+          .then(data => {
+              if (data.success) {
+                  // Mostrar "Carrito actualizado" al eliminar producto
+                  if (window.mensajeUnico) {
+                      window.mensajeUnico.mostrar('Carrito actualizado ✅');
+                  }
+                  cargarCarrito();
+                  
+                  // Notificar cambios usando el sistema mejorado
+                  if (window.carritoSync) {
+                      window.carritoSync.notificarCambio();
+                  }
+              } else {
+                  if (window.mensajeUnico) {
+                      window.mensajeUnico.mostrar(data.message || 'Error al eliminar producto', 'error');
+                  }
+              }
+          })
+          .catch(error => {
+              console.error('Error:', error);
+              if (window.mensajeUnico) {
+                  window.mensajeUnico.mostrar('Error de conexión', 'error');
+              }
+          });
+      };
+
+      window.vaciarCarrito = function() {
+          if (!confirm('¿Estás seguro de que quieres vaciar el carrito?')) {
+              return;
+          }
+          
+          const data = { action: 'vaciar' };
+          
+          fetch('./public/assets/carrito_api.php', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(data)
+          })
+          .then(response => response.json())
+          .then(data => {
+              if (data.success) {
+                  // Mostrar "Carrito actualizado" al vaciar carrito
+                  if (window.mensajeUnico) {
+                      window.mensajeUnico.mostrar('Carrito actualizado ✅');
+                  }
+                  cargarCarrito();
+                  
+                  // Notificar cambios usando el sistema mejorado
+                  if (window.carritoSync) {
+                      window.carritoSync.notificarCambio();
+                  }
+              } else {
+                  if (window.mensajeUnico) {
+                      window.mensajeUnico.mostrar(data.message || 'Error al vaciar carrito', 'error');
+                  }
+              }
+          })
+          .catch(error => {
+              console.error('Error:', error);
+              if (window.mensajeUnico) {
+                  window.mensajeUnico.mostrar('Error de conexión', 'error');
+              }
+          });
+      };
+
+      window.procederCheckout = function() {
+          // Verificar si hay productos en el carrito antes de redirigir
+          const contador = document.getElementById('carrito-contador');
+          const cantidadProductos = parseInt(contador.textContent) || 0;
+          
+          if (cantidadProductos === 0) {
+              if (window.mensajeUnico) {
+                  window.mensajeUnico.mostrar('Tu carrito está vacío', 'error');
+              }
+              return;
+          }
+          
+          // Cerrar el carrito flotante antes de redirigir
+          const panel = document.getElementById('carrito-panel');
+          if (panel.classList.contains('abierto')) {
+              toggleCarrito();
+          }
+          
+          // Mostrar mensaje de redirección
+          if (window.mensajeUnico) {
+              window.mensajeUnico.mostrar('Redirigiendo al carrito... 🛒');
+          }
+          
+          // Redirigir después de un pequeño delay para que se vea el mensaje
+          setTimeout(() => {
+              window.location.href = './index.php?content=carrito';
+          }, 500);
+      };
+
+      // Cerrar carrito al hacer clic fuera
+      document.addEventListener('click', function(e) {
+          if (carritoAbierto && !e.target.closest('#carrito-flotante')) {
+              toggleCarrito();
+          }
       });
   });
 </script>

@@ -55,15 +55,6 @@
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-icon">
-                    <i class="fas fa-box"></i>
-                </div>
-                <div class="stat-content">
-                    <div class="stat-number" id="total-productos">0</div>
-                    <div class="stat-label">Total Productos</div>
-                </div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon">
                     <i class="fas fa-tags"></i>
                 </div>
                 <div class="stat-content">
@@ -85,8 +76,8 @@
                     <i class="fas fa-chart-line"></i>
                 </div>
                 <div class="stat-content">
-                    <div class="stat-number" id="productos-mes">+0</div>
-                    <div class="stat-label">Este Mes</div>
+                    <div class="stat-number" id="productos-mes"></div>
+                    <div class="stat-label">Total de Productos</div>
                 </div>
             </div>
         </div>
@@ -1177,10 +1168,10 @@
 let paginaActual = 1;
 let productoEliminarId = null;
 
-// Cargar productos al inicializar
 document.addEventListener('DOMContentLoaded', function() {
     cargarCategorias();
     cargarProductos();
+    cargarEstadisticasGenerales(); // Cargar estadísticas al inicio
     
     // Inicializar ordenamiento por defecto
     ordenActual = {
@@ -1472,26 +1463,38 @@ function exportarProductos() {
 }
 
 function actualizarEstadisticas(productos, estadisticasReales = null) {
-    // Si tenemos estadísticas reales de la API, las usamos
+    // Si hay estadísticas reales, actualiza directamente las tarjetas
     if (estadisticasReales) {
-        document.getElementById('total-productos').textContent = estadisticasReales.totalProductos;
-        document.getElementById('total-categorias').textContent = estadisticasReales.totalCategorias;
-        document.getElementById('precio-promedio').textContent = '$' + estadisticasReales.precioPromedio.toFixed(2);
-        document.getElementById('productos-mes').textContent = '+' + estadisticasReales.productosMes;
+        document.getElementById('total-categorias').textContent = estadisticasReales.totalCategorias || 0;
+        document.getElementById('precio-promedio').textContent = '$' + (estadisticasReales.precioPromedio ? estadisticasReales.precioPromedio.toFixed(2) : '0.00');
+        document.getElementById('productos-mes').textContent = estadisticasReales.productosMes || 0;
     } else {
-        // Fallback: usar estadísticas de la página actual (comportamiento anterior)
-        document.getElementById('total-productos').textContent = productos.length;
-        
-        const categorias = [...new Set(productos.map(p => p.categoria_nombre).filter(Boolean))];
-        document.getElementById('total-categorias').textContent = categorias.length;
-        
-        const precios = productos.map(p => parseFloat(p.precio));
-        const promedio = precios.length > 0 ? precios.reduce((a, b) => a + b, 0) / precios.length : 0;
-        document.getElementById('precio-promedio').textContent = '$' + promedio.toFixed(2);
-        
-        // Simulación de productos del mes
-        document.getElementById('productos-mes').textContent = '+' + Math.floor(productos.length * 0.3);
+        // Si no hay estadísticas reales, cargar desde la API
+        cargarEstadisticasGenerales();
     }
+}
+
+// Nueva función para cargar estadísticas generales
+function cargarEstadisticasGenerales() {
+    fetch('./public/assets/productos_admin_api.php?action=estadisticas')
+    .then(response => response.json())
+    .then(data => {
+        if (data.success && data.estadisticas) {
+            const stats = data.estadisticas;
+            // Eliminado: total-productos
+            document.getElementById('total-categorias').textContent = stats.totalCategorias || 0;
+            document.getElementById('precio-promedio').textContent = '$' + (stats.precioPromedio ? stats.precioPromedio.toFixed(2) : '0.00');
+            document.getElementById('productos-mes').textContent = stats.productosMes || 0;
+        }
+    })
+    .catch(error => {
+        console.error('Error cargando estadísticas:', error);
+        // Mostrar valores por defecto en caso de error
+        // Eliminado: total-productos
+        document.getElementById('total-categorias').textContent = '0';
+        document.getElementById('precio-promedio').textContent = '$0.00';
+        document.getElementById('productos-mes').textContent = '0';
+    });
 }
 
 // Agregar event listeners para checkboxes individuales
@@ -1652,6 +1655,7 @@ function cambiarEstadoProducto(id, estadoActual) {
     .then(data => {
         if (data.success) {
             cargarProductos(paginaActual);
+            cargarEstadisticasGenerales(); // Recargar estadísticas
             mostrarMensaje(`Producto ${estadoTexto}do correctamente`, 'success');
             notificarActualizacionProductos();
             recargarProductosPublicos();
@@ -1717,6 +1721,7 @@ function confirmarEliminar() {
     .then(data => {
         if (data.success) {
             cargarProductos(paginaActual);
+            cargarEstadisticasGenerales(); // Recargar estadísticas
             cerrarModalConfirmar();
             mostrarMensaje('Producto eliminado correctamente', 'success');
             notificarActualizacionProductos();
@@ -1785,6 +1790,7 @@ document.getElementById('form-producto').addEventListener('submit', function(e) 
     .then(data => {
         if (data.success) {
             cargarProductos(paginaActual);
+            cargarEstadisticasGenerales(); // Recargar estadísticas
             cerrarModalProducto();
             mostrarMensaje(id ? 'Producto actualizado correctamente' : 'Producto creado correctamente', 'success');
             notificarActualizacionProductos();
