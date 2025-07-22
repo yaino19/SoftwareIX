@@ -26,10 +26,12 @@ if (isset($_SESSION['usuario_id'])) {
   <div class="container">
     <div class="profile-content">
       <div class="profile-card">
-        <img src="https://via.placeholder.com/120x120" alt="Avatar" class="profile-avatar">
+        <div class="profile-avatar">
+          <i class="fas fa-user"></i>
+        </div>
         <div class="profile-name"><?php echo isset($filtro_nombre) ? htmlspecialchars($filtro_nombre) : ''; ?></div>
         <div class="profile-email"><?php echo isset($filtro_correo) ? htmlspecialchars($filtro_correo) : ''; ?></div>
-        <button class="edit-btn"><i class="fas fa-edit"></i> Editar Perfil</button>
+        <button class="edit-btn"> Activo </button>
       </div>
       <div class="profile-details">
         <div class="profile-tabs">

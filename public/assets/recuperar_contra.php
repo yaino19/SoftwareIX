@@ -2,6 +2,11 @@
 require_once __DIR__ . '/../../config/config.php';
 require_once __DIR__ . '/../../src/controller/RecuperarPasswordController.php';
 
+// Usar la conexión $conn definida en config.php
+if (!isset($conn)) {
+    die('No se encontró la conexión a la base de datos. Verifica config.php.');
+}
+
 $msg = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $controller = new RecuperarPasswordController($conn);

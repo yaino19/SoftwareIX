@@ -4,15 +4,30 @@ if (!isset($_SESSION)) session_start();
 require_once(__DIR__ . '/config/config.php');
 
 $filtro_nombre = null;
+$isAdmin = false;
+
 if (isset($_SESSION['usuario_id'])) {
     $conn = new mysqli($host, $username, $password, $database);
     if (!$conn->connect_error) {
+        // Obtener nombre del usuario
         $stmt = $conn->prepare("SELECT nombre FROM Usuarios WHERE id = ?");
         $stmt->bind_param("i", $_SESSION['usuario_id']);
         $stmt->execute();
         $stmt->bind_result($nombre);
         if ($stmt->fetch()) {
             $filtro_nombre = $nombre;
+        }
+        $stmt->close();
+        
+        // Verificar si es admin
+        $stmt = $conn->prepare("SELECT tipo_usuario_id FROM Usuarios WHERE id = ?");
+        $stmt->bind_param("i", $_SESSION['usuario_id']);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if ($row = $result->fetch_assoc()) {
+            if (isset($row['tipo_usuario_id']) && $row['tipo_usuario_id'] == 1) {
+                $isAdmin = true;
+            }
         }
         $stmt->close();
         $conn->close();
@@ -331,14 +346,22 @@ if (isset($_SESSION['usuario_id'])) {
         box-shadow: 0 5px 15px rgba(175, 165, 95, 0.3);
       }
       .profile-section {
-        padding: 60px 0;
+        padding: 40px 0;
         background: linear-gradient(135deg, #100418 0%, #2c1e30 100%);
         color: white;
+        min-height: calc(100vh - 70px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
       .profile-content {
         display: grid;
         grid-template-columns: 1fr 2fr;
-        gap: 40px;
+        gap: 60px;
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 20px;
+        width: 100%;
       }
       .profile-card {
         background: rgba(255,255,255,0.1);
@@ -350,13 +373,23 @@ if (isset($_SESSION['usuario_id'])) {
         box-sizing: border-box;
         width: 100%;
         max-width: 100vw;
+        min-height: 450px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
       }
       .profile-avatar {
         width: 120px;
         height: 120px;
         border-radius: 50%;
-        margin-bottom: 20px;
+        margin: 0 auto 20px auto;
         border: 4px solid #afa55f;
+        background: rgba(255,255,255,0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3em;
+        color: #afa55f;
       }
       .profile-name {
         font-size: 1.8em;
@@ -391,6 +424,10 @@ if (isset($_SESSION['usuario_id'])) {
         padding: 40px;
         border-radius: 20px;
         border: 1px solid rgba(255,255,255,0.2);
+        min-height: 450px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
       }
       .profile-tabs {
         display: flex;
@@ -558,6 +595,11 @@ if (isset($_SESSION['usuario_id'])) {
             <li class="nav-item">
               <a class="nav-link" href="#contacto" onclick="showSection('contacto'); return false;">Contacto</a>
             </li>
+            <?php if ($isAdmin): ?>
+            <li class="nav-item">
+              <a class="nav-link" href="#panel-productos" onclick="showSection('panel-productos'); return false;">Panel Productos</a>
+            </li>
+            <?php endif; ?>
           </ul>
         </nav>
         <div class="user-menu">
@@ -571,24 +613,6 @@ if (isset($_SESSION['usuario_id'])) {
                 <i class="fas fa-shopping-cart"></i> Carrito
               </a>
               <?php
-                // Mostrar "Bandeja/Mensajería" solo para admin (tipo 1)
-                $isAdmin = false;
-                if (isset($_SESSION['usuario_id'])) {
-                    $conn = new mysqli($host, $username, $password, $database);
-                    if (!$conn->connect_error) {
-                      $stmt = $conn->prepare("SELECT tipo_usuario_id FROM Usuarios WHERE id = ?");
-                      $stmt->bind_param("i", $_SESSION['usuario_id']);
-                      $stmt->execute();
-                      $result = $stmt->get_result();
-                      if ($row = $result->fetch_assoc()) {
-                        if (isset($row['tipo_usuario_id']) && $row['tipo_usuario_id'] == 1) {
-                            $isAdmin = true;
-                        }
-                      }
-                      $stmt->close();
-                      $conn->close();
-                    }
-                }
                 if ($isAdmin):
               ?>
                 <a href="#mensajeria" class="user-option" onclick="showSection('mensajeria'); return false;">
@@ -807,6 +831,9 @@ if (isset($_SESSION['usuario_id'])) {
       <section id="mensajeria" class="spa-section">
         <?php include './public/assets/mensajeria.php'; ?>
       </section>
+      <section id="panel-productos" class="spa-section">
+        <?php include './public/assets/productos_admin.php'; ?>
+      </section>
       </div>
     </main>
 
@@ -861,7 +888,7 @@ if (isset($_SESSION['usuario_id'])) {
       }
 
       // SPA: Cambia de sección sin recargar
-      function showSection(sectionId) {
+      function showSection(sectionId, categoriaId = null) {
         var found = false;
         document.querySelectorAll('.spa-section').forEach(function(sec) {
           if (sec.id === sectionId) {
@@ -875,6 +902,34 @@ if (isset($_SESSION['usuario_id'])) {
         if (!found) {
           var inicio = document.getElementById('inicio');
           if (inicio) inicio.classList.add('active');
+        }
+
+        // Limpiar parámetros de URL cuando no es productos con categoría específica
+        if (!(sectionId === 'productos' && categoriaId)) {
+          if (window.history && window.history.replaceState) {
+            window.history.replaceState(null, '', window.location.pathname);
+          }
+        }
+
+        // Si es la sección productos y se especifica una categoría, aplicar filtro
+        if (sectionId === 'productos' && categoriaId) {
+          setTimeout(function() {
+            var categoriaSelect = document.getElementById('categoria');
+            if (categoriaSelect) {
+              categoriaSelect.value = categoriaId;
+              // Trigger el evento change para aplicar el filtro
+              if (typeof aplicarFiltros === 'function') {
+                aplicarFiltros();
+              }
+            }
+          }, 100);
+        } else if (sectionId === 'productos' && !categoriaId) {
+          // Si vas a productos sin categoría específica, limpiar filtros
+          setTimeout(function() {
+            if (typeof limpiarFiltros === 'function') {
+              limpiarFiltros();
+            }
+          }, 100);
         }
 
         // Si es carrito, fuerza la pestaña principal y actualiza
@@ -925,10 +980,22 @@ if (isset($_SESSION['usuario_id'])) {
             updateContacto();
           }
         }
-        // Elimina el hash de la URL para evitar scroll/jump
-        if (window.history && window.history.replaceState) {
-          window.history.replaceState(null, '', window.location.pathname);
+        
+        // Solo limpiar URL al final si no se limpió antes (para evitar duplicación)
+        if (sectionId === 'productos' && categoriaId) {
+          // No hacer nada aquí, ya se maneja arriba
+        } else if (window.history && window.history.replaceState) {
+          // Asegurar que la URL esté limpia para otras secciones
+          const currentUrl = new URL(window.location);
+          if (currentUrl.search) {
+            window.history.replaceState(null, '', window.location.pathname);
+          }
         }
+      }
+
+      // Función específica para filtrar por categoría desde el inicio
+      function filtrarCategoria(categoriaId) {
+        showSection('productos', categoriaId);
       }
 
       // Enlaces del nav: SPA
