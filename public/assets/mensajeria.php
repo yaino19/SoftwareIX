@@ -2,8 +2,8 @@
 if (!isset($_SESSION)) session_start();
 require_once(__DIR__ . '/../../config/config.php');
 ?>
-<div class="mensajeria-section" style="padding:32px 0 0 0; background:linear-gradient(135deg,#f8f9fa 0%,#e9ecef 100%); min-height:60vh;">
-  <div class="container">
+<div class="mensajeria-section" style="padding:32px 0 60px 0; background:linear-gradient(135deg,#f8f9fa 0%,#e9ecef 100%); min-height:calc(100vh - 200px);">
+  <div class="container" style="max-width:1200px;">
     <h3 class="section-title" style="margin-top:0;">
       <i class="fas fa-inbox" style="margin-right:10px;color:#7b5b84;"></i>
       Bandeja de Mensajes
@@ -18,21 +18,28 @@ require_once(__DIR__ . '/../../config/config.php');
       <!-- Los mensajes se cargarán aquí dinámicamente -->
     </div>
     
-    <div id="no-mensajes" style="display:none;text-align:center;padding:40px;background:#fff;border-radius:16px;box-shadow:0 4px 18px rgba(123,91,132,0.10);">
-      <i class="fas fa-inbox" style="font-size:3em;color:#ddd;margin-bottom:15px;"></i>
-      <h4 style="color:#666;margin-bottom:10px;">No hay mensajes</h4>
-      <p style="color:#999;">Cuando los usuarios envíen mensajes, aparecerán aquí.</p>
+    <div id="no-mensajes" style="display:none;text-align:center;padding:60px 40px;background:#fff;border-radius:20px;box-shadow:0 6px 24px rgba(123,91,132,0.10);margin-bottom:60px;">
+      <i class="fas fa-inbox" style="font-size:4em;color:#ddd;margin-bottom:20px;"></i>
+      <h4 style="color:#666;margin-bottom:15px;font-size:1.3em;">No hay mensajes</h4>
+      <p style="color:#999;font-size:1.1em;">Cuando los usuarios envíen mensajes, aparecerán aquí.</p>
     </div>
   </div>
 </div>
 
 <style>
-.mensajes-list { margin-top:32px; }
+.mensajeria-section {
+  margin-bottom: 80px !important;
+}
+.mensajes-list { 
+  margin-top:32px; 
+  margin-bottom: 60px;
+  padding-bottom: 40px;
+}
 .mensaje-item { 
   background:#fff; 
   border-radius:16px; 
   box-shadow:0 4px 18px rgba(123,91,132,0.10); 
-  margin-bottom:16px; 
+  margin-bottom:20px; 
   overflow:hidden;
   border-left:4px solid #7b5b84;
   transition:all 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
@@ -40,11 +47,15 @@ require_once(__DIR__ . '/../../config/config.php');
 .mensaje-item.no-leido {
   border-left-color:#afa55f;
   background:#fffef7;
+  box-shadow:0 6px 24px rgba(175,165,95,0.15);
 }
-.mensaje-item:hover { box-shadow:0 8px 32px rgba(123,91,132,0.18); }
+.mensaje-item:hover { 
+  box-shadow:0 8px 32px rgba(123,91,132,0.18); 
+  transform: translateY(-2px);
+}
 
 .mensaje-preview {
-  padding:20px;
+  padding:24px;
   cursor:pointer;
   display:flex;
   justify-content:space-between;
@@ -176,6 +187,9 @@ require_once(__DIR__ . '/../../config/config.php');
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     cargarMensajes();
+    
+    // Configurar verificación automática de nuevos mensajes
+    iniciarVerificacionMensajes();
 });
 
 function cargarMensajes() {
@@ -204,6 +218,40 @@ function cargarMensajes() {
             console.error('Error:', error);
             document.getElementById('mensajes-loading').innerHTML = 
                 '<p style="color:#dc3545;">Error al cargar mensajes</p>';
+        });
+}
+
+// Función para verificar automáticamente nuevos mensajes
+function iniciarVerificacionMensajes() {
+    // Verificar cada 15 segundos si hay nuevos mensajes
+    setInterval(() => {
+        verificarNuevosMensajes();
+    }, 15000);
+}
+
+// Función para verificar si hay nuevos mensajes y recargar si es necesario
+function verificarNuevosMensajes() {
+    fetch('./public/assets/mensajeria_api.php?check_count=1')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const mensajesActuales = document.querySelectorAll('.mensaje-item').length;
+                const totalMensajes = data.total_mensajes || 0;
+                
+                // Si hay diferencia en la cantidad, recargar mensajes
+                if (mensajesActuales !== totalMensajes) {
+                    console.log('Nuevos mensajes detectados, recargando...');
+                    cargarMensajes();
+                    
+                    // Mostrar notificación de nuevo mensaje si aumentó la cantidad
+                    if (totalMensajes > mensajesActuales) {
+                        mostrarMensajeExito('¡Nuevo mensaje recibido!');
+                    }
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Error al verificar nuevos mensajes:', error);
         });
 }
 
@@ -323,14 +371,25 @@ function marcarLeido(mensajeId) {
                 // Cambiar estilo del mensaje (quitar clase no-leido)
                 mensajeItem.classList.remove('no-leido');
                 
-                alert('Mensaje marcado como leído');
+                // Actualizar el badge de mensajería en el menú principal
+                if (typeof window.actualizarBadgeMensajeria === 'function') {
+                    window.actualizarBadgeMensajeria();
+                }
+                
+                // Recargar mensajes para asegurar consistencia
+                setTimeout(() => {
+                    cargarMensajes();
+                }, 500);
+                
+                // Mostrar mensaje de éxito elegante
+                mostrarMensajeExito('Mensaje marcado como leído');
             } else {
-                alert('Error: ' + data.message);
+                mostrarMensajeError('Error: ' + data.message);
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('Error al marcar el mensaje como leído');
+            mostrarMensajeError('Error al marcar el mensaje como leído');
         });
     }
 }
@@ -351,6 +410,9 @@ function eliminarMensaje(mensajeId) {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
+                // Mostrar mensaje de eliminación antes de remover
+                mostrarMensajeExito('Mensaje eliminado correctamente');
+                
                 // Remover el mensaje de la interfaz
                 const mensajeItem = document.querySelector(`[data-mensaje-id="${mensajeId}"]`);
                 if (mensajeItem) {
@@ -365,17 +427,115 @@ function eliminarMensaje(mensajeId) {
                             document.getElementById('mensajes-container').style.display = 'none';
                             document.getElementById('no-mensajes').style.display = 'block';
                         }
+                        
+                        // Actualizar el badge de mensajería
+                        if (typeof window.actualizarBadgeMensajeria === 'function') {
+                            window.actualizarBadgeMensajeria();
+                        }
+                        
+                        // Recargar mensajes para asegurar consistencia
+                        setTimeout(() => {
+                            cargarMensajes();
+                        }, 500);
                     }, 300);
                 }
-                alert('Mensaje eliminado');
             } else {
-                alert('Error: ' + data.message);
+                mostrarMensajeError('Error: ' + data.message);
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('Error al eliminar el mensaje');
+            mostrarMensajeError('Error al eliminar el mensaje');
         });
     }
+}
+
+// Función global para recargar mensajes (se puede llamar desde otras secciones)
+window.recargarMensajes = function() {
+    // Solo recargar si estamos en la sección de mensajería
+    const mensajeriaSection = document.querySelector('.mensajeria-section');
+    if (mensajeriaSection && mensajeriaSection.style.display !== 'none') {
+        cargarMensajes();
+    }
+};
+
+// Función para mostrar mensajes de éxito elegantes
+function mostrarMensajeExito(mensaje) {
+    const toast = document.createElement('div');
+    toast.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: #28a745;
+        color: white;
+        padding: 15px 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+        z-index: 10000;
+        font-size: 14px;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        opacity: 0;
+        transform: translateX(100%);
+        transition: all 0.3s ease;
+    `;
+    toast.innerHTML = `<i class="fas fa-check-circle"></i> ${mensaje}`;
+    
+    document.body.appendChild(toast);
+    
+    // Animar entrada
+    setTimeout(() => {
+        toast.style.opacity = '1';
+        toast.style.transform = 'translateX(0)';
+    }, 100);
+    
+    // Remover después de 3 segundos
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(100%)';
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+
+// Función para mostrar mensajes de error elegantes
+function mostrarMensajeError(mensaje) {
+    const toast = document.createElement('div');
+    toast.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: #dc3545;
+        color: white;
+        padding: 15px 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+        z-index: 10000;
+        font-size: 14px;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        opacity: 0;
+        transform: translateX(100%);
+        transition: all 0.3s ease;
+    `;
+    toast.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${mensaje}`;
+    
+    document.body.appendChild(toast);
+    
+    // Animar entrada
+    setTimeout(() => {
+        toast.style.opacity = '1';
+        toast.style.transform = 'translateX(0)';
+    }, 100);
+    
+    // Remover después de 4 segundos (un poco más para errores)
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(100%)';
+        setTimeout(() => toast.remove(), 300);
+    }, 4000);
 }
 </script>

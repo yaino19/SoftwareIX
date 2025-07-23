@@ -25,7 +25,9 @@ if (isset($_SESSION['usuario_id'])) {
   <div class="container" style="max-width:100vw;overflow-x:hidden;">
     <div class="profile-content" style="max-width:100vw;overflow-x:hidden;">
       <div class="profile-card">
-        <img src="https://via.placeholder.com/120x120" alt="Carrito" class="profile-avatar">
+        <div class="profile-avatar" style="display:flex;align-items:center;justify-content:center;width:120px;height:120px;border-radius:50%;border:5px solid #afa55f;margin:auto;font-size:4em;color:#afa55f;background:transparent;">
+          <i class="fas fa-shopping-cart"></i>
+        </div>
         <div class="profile-name">Carrito de Compras</div>
         <div class="profile-email">Tus productos seleccionados</div>
         <div class="profile-stats">
@@ -79,18 +81,31 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function cargarCarritoCompleto() {
+    // Mostrar loading mientras carga
+    const container = document.getElementById('carrito-productos-lista');
+    if (container) {
+        container.innerHTML = `
+            <div class="cart-loading">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Cargando carrito...</p>
+            </div>
+        `;
+    }
+    
     fetch('./public/assets/carrito_api.php?action=obtener')
     .then(response => response.json())
     .then(data => {
-        if (data.success) {
+        if (data.success && data.productos && data.productos.length > 0) {
             mostrarProductosCarrito(data.productos, data.total, data.cantidad_total);
             actualizarResumen(data.total);
         } else {
+            // Si no hay productos o hay error, mostrar carrito vacío
             mostrarCarritoVacio();
         }
     })
     .catch(error => {
         console.error('Error al cargar carrito:', error);
+        // En caso de error, mostrar carrito vacío
         mostrarCarritoVacio();
     });
 }
@@ -98,56 +113,77 @@ function cargarCarritoCompleto() {
 function mostrarProductosCarrito(productos, total, cantidadTotal) {
     const container = document.getElementById('carrito-productos-lista');
     
-    // Actualizar estadísticas del header CON LOS DATOS DEL CARRITO
-    document.getElementById('total-productos').textContent = cantidadTotal;
-    document.getElementById('total-precio').textContent = '$' + parseFloat(total).toFixed(2);
-    
-    if (productos.length === 0) {
+    // Verificar que los datos sean válidos
+    if (!productos || !Array.isArray(productos) || productos.length === 0) {
         mostrarCarritoVacio();
         return;
     }
     
-    container.innerHTML = productos.map(producto => `
-        <div class="cart-item">
-            <img src="./public/assets/${producto.imagen_url || 'placeholder.jpg'}" 
-                 alt="${producto.nombre}" 
-                 class="item-image">
-            <div class="item-info">
-                <div class="item-name">${producto.nombre}</div>
-                <div class="item-price">$${parseFloat(producto.precio).toFixed(2)}</div>
-                <div class="quantity-controls">
-                    <button class="qty-btn" onclick="cambiarCantidadCompleta(${producto.carrito_producto_id}, ${producto.cantidad - 1})">-</button>
-                    <input type="text" class="qty-input" value="${producto.cantidad}" readonly>
-                    <button class="qty-btn" onclick="cambiarCantidadCompleta(${producto.carrito_producto_id}, ${producto.cantidad + 1})">+</button>
+    // Actualizar estadísticas del header CON LOS DATOS DEL CARRITO
+    const totalProductosEl = document.getElementById('total-productos');
+    const totalPrecioEl = document.getElementById('total-precio');
+    
+    if (totalProductosEl) totalProductosEl.textContent = cantidadTotal || '0';
+    if (totalPrecioEl) totalPrecioEl.textContent = '$' + parseFloat(total || 0).toFixed(2);
+    
+    // Mostrar productos en el contenedor
+    if (container) {
+        container.innerHTML = productos.map(producto => `
+            <div class="cart-item">
+                <img src="./public/assets/${producto.imagen_url || 'placeholder.jpg'}" 
+                     alt="${producto.nombre}" 
+                     class="item-image">
+                <div class="item-info">
+                    <div class="item-name">${producto.nombre}</div>
+                    <div class="item-price">$${parseFloat(producto.precio).toFixed(2)}</div>
+                    <div class="quantity-controls">
+                        <button class="qty-btn" onclick="cambiarCantidadCompleta(${producto.carrito_producto_id}, ${producto.cantidad - 1})">-</button>
+                        <input type="text" class="qty-input" value="${producto.cantidad}" readonly>
+                        <button class="qty-btn" onclick="cambiarCantidadCompleta(${producto.carrito_producto_id}, ${producto.cantidad + 1})">+</button>
+                    </div>
                 </div>
+                <button class="remove-btn" onclick="eliminarProductoCompleto(${producto.carrito_producto_id})">
+                    <i class="fas fa-trash"></i>
+                </button>
             </div>
-            <button class="remove-btn" onclick="eliminarProductoCompleto(${producto.carrito_producto_id})">
-                <i class="fas fa-trash"></i>
-            </button>
-        </div>
-    `).join('');
+        `).join('');
+    }
 }
 
 function mostrarCarritoVacio() {
     const container = document.getElementById('carrito-productos-lista');
     
-    // Cuando el carrito está vacío, todas las estadísticas son 0
-    document.getElementById('total-productos').textContent = '0';
-    document.getElementById('total-precio').textContent = '$0.00';
+    // Actualizar interfaz de productos vacía
+    if (container) {
+        container.innerHTML = `
+            <div class="cart-empty">
+                <i class="fas fa-shopping-cart" style="font-size: 4em; color: #ddd; margin-bottom: 20px;"></i>
+                <h3>Tu carrito está vacío</h3>
+                <p>¡Agrega algunos productos para comenzar!</p>
+                <a href="./index.php?content=productos" class="btn-back-shopping">
+                    <i class="fas fa-arrow-left"></i> Continuar comprando
+                </a>
+            </div>
+        `;
+    }
     
-    container.innerHTML = `
-        <div class="cart-empty">
-            <i class="fas fa-shopping-cart" style="font-size: 4em; color: #ddd; margin-bottom: 20px;"></i>
-            <h3>Tu carrito está vacío</h3>
-            <p>¡Agrega algunos productos para comenzar!</p>
-            <a href="./index.php?content=productos" class="btn-back-shopping">
-                <i class="fas fa-arrow-left"></i> Continuar comprando
-            </a>
-        </div>
-    `;
+    // Actualizar todas las estadísticas a 0 de forma consistente
+    const elementos = {
+        'total-productos': '0',
+        'total-precio': '$0.00',
+        'subtotal-original': '$0.00',
+        'costo-envio': '$0.00',
+        'descuento': '$0.00',
+        'total-final': '$0.00'
+    };
     
-    // El resumen también debe mostrar 0
-    actualizarResumen(0);
+    // Aplicar todos los valores de una vez
+    Object.entries(elementos).forEach(([id, valor]) => {
+        const elemento = document.getElementById(id);
+        if (elemento) {
+            elemento.textContent = valor;
+        }
+    });
 }
 
 function actualizarResumen(subtotal) {
@@ -311,31 +347,81 @@ function eliminarProductoCompleto(carritoProductoId) {
             </button>
 <script>
 function simularPago() {
-    document.getElementById('carrito-productos-lista').innerHTML = `
-        <div class="cart-empty">
-            <i class="fas fa-shopping-cart" style="font-size: 4em; color: #ddd; margin-bottom: 20px;"></i>
-            <h3>Tu carrito está vacío</h3>
-            <p>¡Agrega algunos productos para comenzar!</p>
-            <a href="./index.php?content=productos" class="btn-back-shopping">
-                <i class="fas fa-arrow-left"></i> Continuar comprando
-            </a>
-        </div>
-    `;
-    if (document.getElementById('total-productos')) document.getElementById('total-productos').textContent = '0';
-    if (document.getElementById('total-precio')) document.getElementById('total-precio').textContent = '$0.00';
-
-    if (document.getElementById('subtotal-original')) document.getElementById('subtotal-original').textContent = '$0.00';
-    if (document.getElementById('costo-envio')) document.getElementById('costo-envio').textContent = '$0.00';
-    if (document.getElementById('descuento')) document.getElementById('descuento').textContent = '$0.00';
-    if (document.getElementById('total-final')) document.getElementById('total-final').textContent = '$0.00';
-    // Actualizar carrito flotante si existe
-    if (window.carritoSync && typeof window.carritoSync.notificarCambio === 'function') {
-        window.carritoSync.notificarCambio();
+    // Verificar si hay productos en el carrito antes de procesar
+    const totalProductos = document.getElementById('total-productos').textContent;
+    const totalPrecio = document.getElementById('total-final').textContent;
+    
+    if (totalProductos === '0' || totalPrecio === '$0.00') {
+        // Mostrar mensaje de error si el carrito está vacío
+        if (window.mensajeUnico) {
+            window.mensajeUnico.mostrar('No hay productos en el carrito para procesar el pago', 'error');
+        } else {
+            alert('No hay productos en el carrito para procesar el pago');
+        }
+        return;
     }
-    // Llamar al backend para vaciar el carrito
-    fetch('./public/assets/carrito_api.php?action=vaciar', { method: 'POST' });
-    // Mostrar modal de éxito después de limpiar
-    setTimeout(mostrarModalExito, 100);
+    
+    // Primero vaciar el carrito en el backend
+    fetch('./public/assets/carrito_api.php?action=vaciar', { 
+        method: 'POST' 
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Actualizar interfaz solo después de confirmar que el backend se vació
+        actualizarInterfazCarritoVacio();
+        
+        // Notificar cambios al carrito flotante
+        if (window.carritoSync && typeof window.carritoSync.notificarCambio === 'function') {
+            window.carritoSync.notificarCambio();
+        }
+        
+        // Mostrar modal de éxito
+        setTimeout(mostrarModalExito, 100);
+    })
+    .catch(error => {
+        console.error('Error al vaciar carrito:', error);
+        // Si hay error en el backend, forzar actualización de interfaz
+        actualizarInterfazCarritoVacio();
+        if (window.carritoSync && typeof window.carritoSync.notificarCambio === 'function') {
+            window.carritoSync.notificarCambio();
+        }
+        setTimeout(mostrarModalExito, 100);
+    });
+}
+
+// Función separada para actualizar la interfaz a estado vacío
+function actualizarInterfazCarritoVacio() {
+    // Actualizar lista de productos
+    const container = document.getElementById('carrito-productos-lista');
+    if (container) {
+        container.innerHTML = `
+            <div class="cart-empty">
+                <i class="fas fa-shopping-cart" style="font-size: 4em; color: #ddd; margin-bottom: 20px;"></i>
+                <h3>Tu carrito está vacío</h3>
+                <p>¡Agrega algunos productos para comenzar!</p>
+                <a href="./index.php?content=productos" class="btn-back-shopping">
+                    <i class="fas fa-arrow-left"></i> Continuar comprando
+                </a>
+            </div>
+        `;
+    }
+    
+    // Actualizar estadísticas del header
+    const totalProductosEl = document.getElementById('total-productos');
+    const totalPrecioEl = document.getElementById('total-precio');
+    if (totalProductosEl) totalProductosEl.textContent = '0';
+    if (totalPrecioEl) totalPrecioEl.textContent = '$0.00';
+
+    // Actualizar resumen de pago
+    const subtotalEl = document.getElementById('subtotal-original');
+    const envioEl = document.getElementById('costo-envio');
+    const descuentoEl = document.getElementById('descuento');
+    const totalFinalEl = document.getElementById('total-final');
+    
+    if (subtotalEl) subtotalEl.textContent = '$0.00';
+    if (envioEl) envioEl.textContent = '$0.00';
+    if (descuentoEl) descuentoEl.textContent = '$0.00';
+    if (totalFinalEl) totalFinalEl.textContent = '$0.00';
 }
 
 // Modal centrado de éxito
