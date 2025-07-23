@@ -25,7 +25,9 @@ if (isset($_SESSION['usuario_id'])) {
   <div class="container" style="max-width:100vw;overflow-x:hidden;">
     <div class="profile-content" style="max-width:100vw;overflow-x:hidden;">
       <div class="profile-card">
-        <img src="https://via.placeholder.com/120x120" alt="Carrito" class="profile-avatar">
+        <div class="profile-avatar" style="display:flex;align-items:center;justify-content:center;width:120px;height:120px;border-radius:50%;border:5px solid #afa55f;margin:auto;font-size:4em;color:#afa55f;background:transparent;">
+          <i class="fas fa-shopping-cart"></i>
+        </div>
         <div class="profile-name">Carrito de Compras</div>
         <div class="profile-email">Tus productos seleccionados</div>
         <div class="profile-stats">
@@ -311,6 +313,20 @@ function eliminarProductoCompleto(carritoProductoId) {
             </button>
 <script>
 function simularPago() {
+    // Verificar si hay productos en el carrito antes de procesar
+    const totalProductos = document.getElementById('total-productos').textContent;
+    const totalPrecio = document.getElementById('total-final').textContent;
+    
+    if (totalProductos === '0' || totalPrecio === '$0.00') {
+        // Mostrar mensaje de error si el carrito está vacío
+        if (window.mensajeUnico) {
+            window.mensajeUnico.mostrar('No hay productos en el carrito para procesar el pago', 'error');
+        } else {
+            alert('No hay productos en el carrito para procesar el pago');
+        }
+        return;
+    }
+    
     document.getElementById('carrito-productos-lista').innerHTML = `
         <div class="cart-empty">
             <i class="fas fa-shopping-cart" style="font-size: 4em; color: #ddd; margin-bottom: 20px;"></i>

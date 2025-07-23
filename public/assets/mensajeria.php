@@ -2,8 +2,8 @@
 if (!isset($_SESSION)) session_start();
 require_once(__DIR__ . '/../../config/config.php');
 ?>
-<div class="mensajeria-section" style="padding:32px 0 0 0; background:linear-gradient(135deg,#f8f9fa 0%,#e9ecef 100%); min-height:60vh;">
-  <div class="container">
+<div class="mensajeria-section" style="padding:32px 0 60px 0; background:linear-gradient(135deg,#f8f9fa 0%,#e9ecef 100%); min-height:calc(100vh - 200px);">
+  <div class="container" style="max-width:1200px;">
     <h3 class="section-title" style="margin-top:0;">
       <i class="fas fa-inbox" style="margin-right:10px;color:#7b5b84;"></i>
       Bandeja de Mensajes
@@ -18,21 +18,28 @@ require_once(__DIR__ . '/../../config/config.php');
       <!-- Los mensajes se cargarán aquí dinámicamente -->
     </div>
     
-    <div id="no-mensajes" style="display:none;text-align:center;padding:40px;background:#fff;border-radius:16px;box-shadow:0 4px 18px rgba(123,91,132,0.10);">
-      <i class="fas fa-inbox" style="font-size:3em;color:#ddd;margin-bottom:15px;"></i>
-      <h4 style="color:#666;margin-bottom:10px;">No hay mensajes</h4>
-      <p style="color:#999;">Cuando los usuarios envíen mensajes, aparecerán aquí.</p>
+    <div id="no-mensajes" style="display:none;text-align:center;padding:60px 40px;background:#fff;border-radius:20px;box-shadow:0 6px 24px rgba(123,91,132,0.10);margin-bottom:60px;">
+      <i class="fas fa-inbox" style="font-size:4em;color:#ddd;margin-bottom:20px;"></i>
+      <h4 style="color:#666;margin-bottom:15px;font-size:1.3em;">No hay mensajes</h4>
+      <p style="color:#999;font-size:1.1em;">Cuando los usuarios envíen mensajes, aparecerán aquí.</p>
     </div>
   </div>
 </div>
 
 <style>
-.mensajes-list { margin-top:32px; }
+.mensajeria-section {
+  margin-bottom: 80px !important;
+}
+.mensajes-list { 
+  margin-top:32px; 
+  margin-bottom: 60px;
+  padding-bottom: 40px;
+}
 .mensaje-item { 
   background:#fff; 
   border-radius:16px; 
   box-shadow:0 4px 18px rgba(123,91,132,0.10); 
-  margin-bottom:16px; 
+  margin-bottom:20px; 
   overflow:hidden;
   border-left:4px solid #7b5b84;
   transition:all 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
@@ -40,11 +47,15 @@ require_once(__DIR__ . '/../../config/config.php');
 .mensaje-item.no-leido {
   border-left-color:#afa55f;
   background:#fffef7;
+  box-shadow:0 6px 24px rgba(175,165,95,0.15);
 }
-.mensaje-item:hover { box-shadow:0 8px 32px rgba(123,91,132,0.18); }
+.mensaje-item:hover { 
+  box-shadow:0 8px 32px rgba(123,91,132,0.18); 
+  transform: translateY(-2px);
+}
 
 .mensaje-preview {
-  padding:20px;
+  padding:24px;
   cursor:pointer;
   display:flex;
   justify-content:space-between;
