@@ -11,6 +11,19 @@ if (!isset($_SESSION['usuario_id'])) {
 }
 
 try {
+    // Si se solicita verificar mensajes no leídos
+    if (isset($_GET['check_unread'])) {
+        $query = "SELECT COUNT(*) as total FROM mensajes WHERE leido = 0";
+        $result = $conn->query($query);
+        $row = $result->fetch_assoc();
+        
+        echo json_encode([
+            'success' => true, 
+            'mensajes_no_leidos' => (int)$row['total']
+        ]);
+        exit;
+    }
+    
     // Obtener mensajes con información del usuario (usando JOIN)
     $query = "SELECT m.id, m.usuario_id, m.asunto, m.mensaje, m.fecha_envio, m.leido,
                      u.nombre, u.correo 

@@ -334,6 +334,11 @@ function marcarLeido(mensajeId) {
                 // Cambiar estilo del mensaje (quitar clase no-leido)
                 mensajeItem.classList.remove('no-leido');
                 
+                // Actualizar el badge de mensajería en el menú principal
+                if (typeof window.actualizarBadgeMensajeria === 'function') {
+                    window.actualizarBadgeMensajeria();
+                }
+                
                 alert('Mensaje marcado como leído');
             } else {
                 alert('Error: ' + data.message);
@@ -375,6 +380,11 @@ function eliminarMensaje(mensajeId) {
                         if (mensajesRestantes.length === 0) {
                             document.getElementById('mensajes-container').style.display = 'none';
                             document.getElementById('no-mensajes').style.display = 'block';
+                        }
+                        
+                        // Actualizar el badge de mensajería
+                        if (typeof window.actualizarBadgeMensajeria === 'function') {
+                            window.actualizarBadgeMensajeria();
                         }
                     }, 300);
                 }

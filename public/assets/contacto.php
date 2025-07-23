@@ -144,6 +144,13 @@ require_once(__DIR__ . '/../../config/config.php');
             successDiv.style.display = 'block';
             this.reset(); // Limpiar formulario
             
+            // Actualizar el badge de mensajería si existe la función
+            if (typeof window.actualizarBadgeMensajeria === 'function') {
+              setTimeout(() => {
+                window.actualizarBadgeMensajeria();
+              }, 1000); // Delay para asegurar que el mensaje se guardó
+            }
+            
             // Ocultar mensaje después de 5 segundos
             setTimeout(() => {
               successDiv.style.display = 'none';

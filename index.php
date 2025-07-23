@@ -561,6 +561,29 @@ if (isset($_SESSION['usuario_id'])) {
         display: block;
         margin-bottom: 2px;
       }
+      
+      /* Badge de notificación para mensajería */
+      .notification-badge {
+        background: #e74c3c;
+        color: white;
+        border-radius: 50%;
+        padding: 2px 6px;
+        font-size: 0.75em;
+        font-weight: 600;
+        margin-left: 8px;
+        min-width: 18px;
+        height: 18px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        animation: pulse 2s infinite;
+      }
+      
+      @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+        100% { transform: scale(1); }
+      }
     </style>
   </head>
   <body>
@@ -606,6 +629,7 @@ if (isset($_SESSION['usuario_id'])) {
               ?>
                 <a href="#mensajeria" class="user-option" onclick="showSection('mensajeria'); return false;">
                   <i class="fas fa-envelope"></i> Mensajería
+                  <span id="mensajeria-badge" class="notification-badge" style="display:none;">1</span>
                 </a>
               <?php endif; ?>
               <a href="#" class="user-option-logout" id="logout-link">
@@ -980,6 +1004,14 @@ if (isset($_SESSION['usuario_id'])) {
           }
         }
         
+        // Si es mensajería, ocultar el badge de notificación
+        if (sectionId === 'mensajeria') {
+          var badge = document.getElementById('mensajeria-badge');
+          if (badge) {
+            badge.style.display = 'none';
+          }
+        }
+        
         // Solo limpiar URL al final si no se limpió antes (para evitar duplicación)
         if (sectionId === 'productos' && categoriaId) {
           // No hacer nada aquí, ya se maneja arriba
@@ -1006,7 +1038,51 @@ if (isset($_SESSION['usuario_id'])) {
             showSection(section);
           });
         });
+        
+        // Verificar mensajes no leídos al cargar la página
+        verificarMensajesNoLeidos();
+        
+        // Verificar mensajes cada 30 segundos automáticamente
+        setInterval(verificarMensajesNoLeidos, 30000);
       });
+
+      // Función para verificar mensajes no leídos
+      function verificarMensajesNoLeidos() {
+        fetch('./public/assets/mensajeria_api.php?check_unread=1')
+          .then(response => response.json())
+          .then(data => {
+            if (data.success && data.mensajes_no_leidos > 0) {
+              mostrarBadgeMensajeria(data.mensajes_no_leidos);
+            } else {
+              ocultarBadgeMensajeria();
+            }
+          })
+          .catch(error => {
+            console.error('Error al verificar mensajes:', error);
+          });
+      }
+
+      // Función para mostrar el badge de mensajería
+      function mostrarBadgeMensajeria(cantidad) {
+        var badge = document.getElementById('mensajeria-badge');
+        if (badge) {
+          badge.textContent = cantidad > 9 ? '9+' : cantidad;
+          badge.style.display = 'inline-flex';
+        }
+      }
+
+      // Función para ocultar el badge de mensajería
+      function ocultarBadgeMensajeria() {
+        var badge = document.getElementById('mensajeria-badge');
+        if (badge) {
+          badge.style.display = 'none';
+        }
+      }
+
+      // Función global para actualizar badge desde otras secciones
+      window.actualizarBadgeMensajeria = function() {
+        verificarMensajesNoLeidos();
+      };
 
       document.addEventListener('DOMContentLoaded', function () {
         const logoutLink = document.getElementById('logout-link');
