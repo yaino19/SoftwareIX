@@ -570,17 +570,6 @@ if (isset($_SESSION['usuario_id'])) {
           <a href="#inicio" onclick="showSection('inicio'); return false;"><img src="./public/assets/img/LogoPrincipal.png" alt="Logo" class="logo"/></a>
           <h1 class="site-title">zona-UTP</h1>
         </div>
-
-        <div class="search-container">
-          <input
-            type="text"
-            class="search-input"
-            placeholder="Buscar productos..."
-          />
-          <button class="search-button">
-            <i class="fas fa-search"></i>
-          </button>
-        </div>
         <button class="hamburger-menu" id="hamburger-menu">
           <i class="fas fa-bars"></i>
         </button>
@@ -902,6 +891,16 @@ if (isset($_SESSION['usuario_id'])) {
         if (!found) {
           var inicio = document.getElementById('inicio');
           if (inicio) inicio.classList.add('active');
+        }
+
+        // Controlar visibilidad del carrito flotante
+        var carritoFlotante = document.getElementById('carrito-flotante');
+        if (carritoFlotante) {
+          if (sectionId === 'mensajeria') {
+            carritoFlotante.style.display = 'none';
+          } else {
+            carritoFlotante.style.display = 'block';
+          }
         }
 
         // Limpiar parámetros de URL cuando no es productos con categoría específica
