@@ -187,6 +187,9 @@ require_once(__DIR__ . '/../../config/config.php');
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     cargarMensajes();
+    
+    // Configurar verificación automática de nuevos mensajes
+    iniciarVerificacionMensajes();
 });
 
 function cargarMensajes() {
@@ -215,6 +218,40 @@ function cargarMensajes() {
             console.error('Error:', error);
             document.getElementById('mensajes-loading').innerHTML = 
                 '<p style="color:#dc3545;">Error al cargar mensajes</p>';
+        });
+}
+
+// Función para verificar automáticamente nuevos mensajes
+function iniciarVerificacionMensajes() {
+    // Verificar cada 15 segundos si hay nuevos mensajes
+    setInterval(() => {
+        verificarNuevosMensajes();
+    }, 15000);
+}
+
+// Función para verificar si hay nuevos mensajes y recargar si es necesario
+function verificarNuevosMensajes() {
+    fetch('./public/assets/mensajeria_api.php?check_count=1')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const mensajesActuales = document.querySelectorAll('.mensaje-item').length;
+                const totalMensajes = data.total_mensajes || 0;
+                
+                // Si hay diferencia en la cantidad, recargar mensajes
+                if (mensajesActuales !== totalMensajes) {
+                    console.log('Nuevos mensajes detectados, recargando...');
+                    cargarMensajes();
+                    
+                    // Mostrar notificación de nuevo mensaje si aumentó la cantidad
+                    if (totalMensajes > mensajesActuales) {
+                        mostrarMensajeExito('¡Nuevo mensaje recibido!');
+                    }
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Error al verificar nuevos mensajes:', error);
         });
 }
 
@@ -339,14 +376,20 @@ function marcarLeido(mensajeId) {
                     window.actualizarBadgeMensajeria();
                 }
                 
-                alert('Mensaje marcado como leído');
+                // Recargar mensajes para asegurar consistencia
+                setTimeout(() => {
+                    cargarMensajes();
+                }, 500);
+                
+                // Mostrar mensaje de éxito elegante
+                mostrarMensajeExito('Mensaje marcado como leído');
             } else {
-                alert('Error: ' + data.message);
+                mostrarMensajeError('Error: ' + data.message);
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('Error al marcar el mensaje como leído');
+            mostrarMensajeError('Error al marcar el mensaje como leído');
         });
     }
 }
@@ -367,6 +410,9 @@ function eliminarMensaje(mensajeId) {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
+                // Mostrar mensaje de eliminación antes de remover
+                mostrarMensajeExito('Mensaje eliminado correctamente');
+                
                 // Remover el mensaje de la interfaz
                 const mensajeItem = document.querySelector(`[data-mensaje-id="${mensajeId}"]`);
                 if (mensajeItem) {
@@ -386,17 +432,110 @@ function eliminarMensaje(mensajeId) {
                         if (typeof window.actualizarBadgeMensajeria === 'function') {
                             window.actualizarBadgeMensajeria();
                         }
+                        
+                        // Recargar mensajes para asegurar consistencia
+                        setTimeout(() => {
+                            cargarMensajes();
+                        }, 500);
                     }, 300);
                 }
-                alert('Mensaje eliminado');
             } else {
-                alert('Error: ' + data.message);
+                mostrarMensajeError('Error: ' + data.message);
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('Error al eliminar el mensaje');
+            mostrarMensajeError('Error al eliminar el mensaje');
         });
     }
+}
+
+// Función global para recargar mensajes (se puede llamar desde otras secciones)
+window.recargarMensajes = function() {
+    // Solo recargar si estamos en la sección de mensajería
+    const mensajeriaSection = document.querySelector('.mensajeria-section');
+    if (mensajeriaSection && mensajeriaSection.style.display !== 'none') {
+        cargarMensajes();
+    }
+};
+
+// Función para mostrar mensajes de éxito elegantes
+function mostrarMensajeExito(mensaje) {
+    const toast = document.createElement('div');
+    toast.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: #28a745;
+        color: white;
+        padding: 15px 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+        z-index: 10000;
+        font-size: 14px;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        opacity: 0;
+        transform: translateX(100%);
+        transition: all 0.3s ease;
+    `;
+    toast.innerHTML = `<i class="fas fa-check-circle"></i> ${mensaje}`;
+    
+    document.body.appendChild(toast);
+    
+    // Animar entrada
+    setTimeout(() => {
+        toast.style.opacity = '1';
+        toast.style.transform = 'translateX(0)';
+    }, 100);
+    
+    // Remover después de 3 segundos
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(100%)';
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+
+// Función para mostrar mensajes de error elegantes
+function mostrarMensajeError(mensaje) {
+    const toast = document.createElement('div');
+    toast.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: #dc3545;
+        color: white;
+        padding: 15px 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+        z-index: 10000;
+        font-size: 14px;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        opacity: 0;
+        transform: translateX(100%);
+        transition: all 0.3s ease;
+    `;
+    toast.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${mensaje}`;
+    
+    document.body.appendChild(toast);
+    
+    // Animar entrada
+    setTimeout(() => {
+        toast.style.opacity = '1';
+        toast.style.transform = 'translateX(0)';
+    }, 100);
+    
+    // Remover después de 4 segundos (un poco más para errores)
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(100%)';
+        setTimeout(() => toast.remove(), 300);
+    }, 4000);
 }
 </script>

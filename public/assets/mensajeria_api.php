@@ -24,6 +24,19 @@ try {
         exit;
     }
     
+    // Si se solicita verificar el conteo total de mensajes
+    if (isset($_GET['check_count'])) {
+        $query = "SELECT COUNT(*) as total FROM mensajes";
+        $result = $conn->query($query);
+        $row = $result->fetch_assoc();
+        
+        echo json_encode([
+            'success' => true, 
+            'total_mensajes' => (int)$row['total']
+        ]);
+        exit;
+    }
+    
     // Obtener mensajes con información del usuario (usando JOIN)
     $query = "SELECT m.id, m.usuario_id, m.asunto, m.mensaje, m.fecha_envio, m.leido,
                      u.nombre, u.correo 

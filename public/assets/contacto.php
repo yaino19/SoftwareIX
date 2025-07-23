@@ -151,6 +151,13 @@ require_once(__DIR__ . '/../../config/config.php');
               }, 1000); // Delay para asegurar que el mensaje se guardó
             }
             
+            // Recargar lista de mensajes si estamos en la sección de mensajería
+            if (typeof window.recargarMensajes === 'function') {
+              setTimeout(() => {
+                window.recargarMensajes();
+              }, 1500); // Delay adicional para que se actualice después del badge
+            }
+            
             // Ocultar mensaje después de 5 segundos
             setTimeout(() => {
               successDiv.style.display = 'none';
